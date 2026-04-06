@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RobCo Industries — KONFERENS-TERMINAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   KONFIGURATION — ändra deadline här om det behövs
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:         #020b05;
+  --pip:        #50fa7b;
+  --pip-bright: #afffca;
+  --pip-dim:    #1e6635;
+  --pip-dark:   #0a2b15;
+  --amber:      #ffb000;
+  --red:        #ff2020;
+  --white:      #c8f5d8;
+  --gray:       #2e6040;
+  --panel-bg:   #030e06;
+  --border:     #0f4020;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  background-image: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,80,30,0.2) 0%, transparent 70%);
+  color: var(--pip);
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 21px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* CRT SCANLINES */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.2) 3px,
+    rgba(0,0,0,0.2) 6px
+  );
+  pointer-events: none;
+  z-index: 900;
+}
+
+/* CRT VINJETT */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+  z-index: 901;
+  animation: flicker 12s infinite;
+}
+@keyframes flicker {
+  0%,100%{opacity:1} 85%{opacity:1} 86%{opacity:.8} 87%{opacity:1}
+  93%{opacity:1} 93.5%{opacity:.85} 94%{opacity:1}
+}
+
+/* ── SKÄRMAR ── */
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 1.5rem 2rem 3rem;
+  max-width: 920px;
+  margin: 0 auto;
+  flex-direction: column;
+  gap: 1.1rem;
+  position: relative;
+  z-index: 10;
+}
+.screen.active { display: flex; }
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  border-bottom: 2px solid var(--pip-dim);
+  padding-bottom: 0.5rem;
+}
+.topbar-id { font-size: 1rem; color: var(--pip-dim); letter-spacing: 0.07em; }
+.topbar-cd { font-size: 1.15rem; color: var(--amber); letter-spacing: 0.06em; }
+.topbar-cd.urgent  { color: var(--red); animation: blink 0.7s step-end infinite; }
+.topbar-cd.expired { color: var(--red); }
+
+/* ── SEPARATOR ── */
+.sep { color: var(--pip-dim); font-size: 0.95rem; overflow: hidden; white-space: nowrap; }
+
+/* ── RUBRIKER ── */
+.pip-h1 {
+  font-size: clamp(2.2rem, 6.5vw, 4rem);
+  font-weight: normal;
+  letter-spacing: 0.06em;
+  text-align: center;
+  line-height: 1.05;
+  color: var(--pip-bright);
+  text-shadow: 0 0 10px var(--pip), 0 0 35px rgba(80,250,123,.55), 0 0 70px rgba(80,250,123,.2);
+  position: relative;
+}
+.pip-h1::before, .pip-h1::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  text-align: center;
+}
+.pip-h1::before {
+  color: var(--red);
+  clip-path: polygon(0 28%,100% 28%,100% 46%,0 46%);
+  animation: glitch-a 6s infinite;
+}
+.pip-h1::after {
+  color: #00ffff;
+  clip-path: polygon(0 58%,100% 58%,100% 72%,0 72%);
+  animation: glitch-b 6s .2s infinite;
+}
+@keyframes glitch-a {
+  0%,87%,100%{transform:translateX(0);opacity:0}
+  88%{transform:translateX(-5px);opacity:.9}
+  90%{transform:translateX(5px);opacity:.9}
+  92%{transform:translateX(0);opacity:0}
+}
+@keyframes glitch-b {
+  0%,87%,100%{transform:translateX(0);opacity:0}
+  88%{transform:translateX(5px);opacity:.9}
+  90%{transform:translateX(-5px);opacity:.9}
+  92%{transform:translateX(0);opacity:0}
+}
+
+.pip-h2 {
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+  font-weight: normal;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--pip-bright);
+  text-shadow: 0 0 8px var(--pip), 0 0 25px rgba(80,250,123,.4);
+}
+
+/* ── STATUS-RAD ── */
+.status-line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.4rem;
+  color: var(--amber);
+  letter-spacing: 0.09em;
+  border: 2px solid var(--amber);
+  padding: 0.45rem 1.1rem;
+  background: rgba(255,176,0,.04);
+  box-shadow: 0 0 12px rgba(255,176,0,.2), inset 0 0 20px rgba(255,176,0,.04);
+  animation: amber-glow 2.5s infinite;
+}
+@keyframes amber-glow {
+  0%,100%{box-shadow:0 0 12px rgba(255,176,0,.2)}
+  50%{box-shadow:0 0 25px rgba(255,176,0,.45)}
+}
+
+/* ── ASCII-BOX ── */
+.abox {
+  border: 2px solid var(--pip-dim);
+  padding: 1.3rem 1.6rem;
+  background: var(--panel-bg);
+  position: relative;
+  box-shadow: inset 0 0 30px rgba(0,60,20,.18), 0 0 10px rgba(80,250,123,.07);
+}
+.abox-title {
+  position: absolute;
+  top: -.8rem;
+  left: 1.2rem;
+  background: var(--panel-bg);
+  padding: 0 .6rem;
+  font-size: 1rem;
+  color: var(--pip-dim);
+  letter-spacing: .1em;
+}
+
+/* ── BRÖDTEXT ── */
+.pip-body {
+  font-size: 1.4rem;
+  line-height: 1.65;
+  color: var(--white);
+}
+.pip-body strong { color: var(--pip-bright); }
+
+/* ── TERMINALLOGG ── */
+.tlog {
+  font-size: 1.2rem;
+  color: var(--pip-dim);
+  line-height: 1.9;
+  max-height: 280px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pip-dim) transparent;
+}
+.tlog .ok   { color: var(--pip); }
+.tlog .wa   { color: var(--amber); }
+.tlog .er   { color: var(--red); }
+.tlog .dm   { color: var(--gray); }
+
+/* ── PROGRESSBAR ── */
+.pbar-wrap { width:100%; height:10px; background:var(--pip-dark); border:1px solid var(--pip-dim); margin:.8rem 0; }
+.pbar-fill { height:100%; background:var(--pip); width:0%; transition:width .35s ease; box-shadow:0 0 12px var(--pip), 0 0 24px rgba(80,250,123,.4); }
+
+/* ── KNAPPAR ── */
+.pip-btn {
+  display: inline-block;
+  font-family: inherit;
+  font-size: 1.5rem;
+  letter-spacing: .1em;
+  padding: .65rem 2.4rem;
+  cursor: pointer;
+  border: 2px solid var(--pip);
+  background: transparent;
+  color: var(--pip);
+  text-transform: uppercase;
+  text-shadow: 0 0 8px var(--pip);
+  box-shadow: 0 0 10px rgba(80,250,123,.2);
+  transition: all .12s;
+  position: relative;
+  overflow: hidden;
+}
+.pip-btn::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:var(--pip);
+  transform:translateX(-102%);
+  transition:transform .12s;
+  z-index:-1;
+}
+.pip-btn:hover { color:var(--bg); text-shadow:none; box-shadow:0 0 20px rgba(80,250,123,.5); }
+.pip-btn:hover::before { transform:translateX(0); }
+.pip-btn:active { transform:scale(.97); }
+
+.pip-btn-amber {
+  border-color:var(--amber);
+  color:var(--amber);
+  text-shadow:0 0 8px var(--amber);
+  box-shadow:0 0 10px rgba(255,176,0,.2);
+}
+.pip-btn-amber::before { background:var(--amber); }
+.pip-btn-amber:hover { color:var(--bg); }
+
+/* Valknappar */
+.cbtn {
+  display:block;
+  width:100%;
+  font-family:inherit;
+  font-size:1.3rem;
+  letter-spacing:.04em;
+  padding:.65rem 1rem;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--white);
+  text-align:left;
+  transition:all .12s;
+}
+.cbtn::before { content:'  »  '; color:var(--pip-dim); }
+.cbtn:hover { border-color:var(--pip); color:var(--pip-bright); background:rgba(80,250,123,.05); }
+.cbtn:hover::before { color:var(--pip); }
+
+/* ── SVARSPANEL ── */
+.rbox {
+  border-left:4px solid var(--amber);
+  padding:.85rem 1.2rem;
+  font-size:1.25rem;
+  color:var(--amber);
+  background:rgba(255,176,0,.04);
+  line-height:1.7;
+  display:none;
+}
+
+/* ── ORDERRADER ── */
+.orow {
+  display:flex;
+  gap:1.2rem;
+  padding:.8rem 0;
+  border-bottom:1px solid var(--border);
+  font-size:1.35rem;
+  color:var(--white);
+  line-height:1.55;
+  align-items:flex-start;
+}
+.orow:last-child { border-bottom:none; }
+.onum { color:var(--pip); min-width:2.8rem; font-size:1.3rem; text-shadow:0 0 6px var(--pip); flex-shrink:0; }
+.hi   { color:var(--pip-bright); }
+.wa   { color:var(--amber); }
+.nt   { color:var(--gray); font-size:1.1rem; }
+
+/* ── NEDRÄKNING JÄTTESTOR ── */
+.cd-big {
+  font-size: clamp(3.5rem, 11vw, 6.5rem);
+  color:var(--pip);
+  text-shadow:0 0 20px var(--pip), 0 0 50px rgba(80,250,123,.4);
+  text-align:center;
+  letter-spacing:.04em;
+  line-height:1;
+}
+.cd-big.red {
+  color:var(--red);
+  text-shadow:0 0 20px var(--red), 0 0 50px rgba(255,32,32,.4);
+  animation:blink .8s step-end infinite;
+}
+
+/* ── ANIMS ── */
+.blink      { animation:blink 1s step-end infinite; }
+.fast-blink { animation:blink .55s step-end infinite; }
+.pulse      { animation:pip-pulse 2.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes pip-pulse {
+  0%,100%{text-shadow:0 0 10px var(--pip),0 0 30px rgba(80,250,123,.5)}
+  50%{text-shadow:0 0 25px var(--pip),0 0 60px rgba(80,250,123,.85),0 0 100px rgba(80,250,123,.3)}
+}
+
+/* ── SLUTRAD ── */
+.final-line {
+  font-size:1.25rem; color:var(--gray);
+  text-align:center; letter-spacing:.1em;
+  padding:.5rem 0;
+}
+
+.restart-link {
+  font-size:1.05rem; color:var(--gray); cursor:pointer;
+  letter-spacing:.1em; text-decoration:underline;
+  text-underline-offset:3px; background:none; border:none;
+  font-family:inherit; text-align:center; display:block; margin:0 auto;
+}
+.restart-link:hover { color:var(--pip); }
+
+.mute-btn {
+  position:fixed; bottom:1rem; right:1rem; z-index:950;
+  font-family:inherit; font-size:1.05rem; letter-spacing:.08em;
+  padding:.3rem .9rem; border:1px solid var(--gray);
+  background:var(--panel-bg); color:var(--gray); cursor:pointer;
+  transition:all .15s;
+}
+.mute-btn:hover { color:var(--pip); border-color:var(--pip); }
+
+@media (max-width:520px) {
+  body { font-size:17px; }
+  .screen { padding:1rem 1rem 2.5rem; }
+  .pip-btn { font-size:1.2rem; padding:.55rem 1.2rem; }
+  body::before { background-size:100% 5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LJUD — byt src mot din .mp3-fil -->
+<audio id="bgAudio" loop preload="none">
+  <source src="https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc88b085.mp3" type="audio/mpeg">
+</audio>
+<button class="mute-btn" id="muteBtn" style="display:none" onclick="toggleMute()">🔊 LJUD AV</button>
+
+
+<!-- ════════════════════════════════════════════════
+     SKÄRM 1 — START
+     ════════════════════════════════════════════════ -->
+<section class="screen active" id="screen1">
+
+  <div class="topbar">
+    <span class="topbar-id">ROBCO INDUSTRIES™ UNIFIED OPERATING SYSTEM — APT-PROTOKOLL v4.08</span>
+    <span class="topbar-cd" id="cd1">BERÄKNAR...</span>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <div style="text-align:center;font-size:4rem;color:var(--red)" class="fast-blink">▲ ▲ ▲</div>
+
+  <h1 class="pip-h1 pulse" data-text="KONFERENSEN HAR PÅBÖRJATS">
+    KONFERENSEN HAR PÅBÖRJATS
+  </h1>
+
+  <div class="status-line">
+    <span class="blink">█</span>
+    &nbsp;STATUS: OSTRUKTUR IDENTIFIERAD &nbsp;│&nbsp; SAMORDNING KRÄVS&nbsp;
+    <span class="blink">█</span>
+  </div>
+
+  <div class="abox">
+    <span class="abox-title">[ SITUATIONSANALYS — AUTOMATISKT GENERERAD ]</span>
+    <p class="pip-body">
+      Systemet har registrerat att ett <strong>konferenstillfälle</strong> har aktiverats.<br><br>
+      Personalnoder befinner sig i rörelse utan bekräftad destinationsstatus.
+      Koordinationsprotokoll har <strong>ej slutförts</strong>.<br><br>
+      Situationen är inte alarmerande. Den är dock<br>
+      <strong>tekniskt sett ostrukturerad.</strong><br><br>
+      Åtgärd krävs. Omedelbart eller snart.
+    </p>
+  </div>
+
+  <div class="tlog">
+    <div class="dm">&gt; 2026-04-08 15:30:01 &nbsp; Konferenstillfälle aktiverat</div>
+    <div class="dm">&gt; 2026-04-08 15:30:02 &nbsp; Personalstatus: <span class="wa">SPRIDD</span></div>
+    <div class="dm">&gt; 2026-04-08 15:30:03 &nbsp; Koordinationsprotokoll: <span class="er">OFULLSTÄNDIGT</span></div>
+    <div class="dm">&gt; 2026-04-08 15:30:04 &nbsp; Väntar på användaråtgärd<span class="blink">_</span></div>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <div style="text-align:center">
+    <button class="pip-btn" onclick="startMission()">▶&nbsp; PÅBÖRJA ÅTERSTÄLLNING</button>
+    <p style="font-size:1.1rem;color:var(--gray);margin-top:.7rem;letter-spacing:.07em">
+      Klicka för att starta. Systemet förväntar sig att du agerar inom rimlig tid.
+    </p>
+  </div>
+
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     SKÄRM 2 — ANALYS
+     ════════════════════════════════════════════════ -->
+<section class="screen" id="screen2">
+
+  <div class="topbar">
+    <span class="topbar-id">ANALYS-MODUL v2.1 // KONTEXTSÖKNING AKTIV</span>
+    <span class="topbar-cd" id="cd2">BERÄKNAR...</span>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <h2 class="pip-h2">SYSTEMANALYS PÅGÅR</h2>
+
+  <!-- STEG 1 -->
+  <div id="step1">
+    <div class="abox">
+      <span class="abox-title">[ STEG 1 / 3 — KONTEXTSÖKNING ]</span>
+      <div class="pbar-wrap"><div class="pbar-fill" id="scanBar"></div></div>
+      <div class="tlog" id="scanLog">
+        <span class="dm">Initierar sökning<span class="blink">_</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2 -->
+  <div id="step2" style="display:none">
+    <div class="abox">
+      <span class="abox-title">[ STEG 2 / 4 — IDENTITETSVERIFIERING ]</span>
+      <p class="pip-body" style="margin-bottom:1.2rem">
+        Systemet behöver fastställa din status i det föregående sammanhangsprotokollet.<br><br>
+        <strong>Deltog du i escape room-arbetet vid det förra tillfället?</strong>
+      </p>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button class="cbtn" onclick="answer('ja')">Ja. Jag var med. Jag vet vad det handlar om.</button>
+        <button class="cbtn" onclick="answer('nej')">Nej. Jag var inte med. Situationen är otydlig.</button>
+        <button class="cbtn" onclick="answer('osaker')">Jag är osäker. Möjligen. Delvis.</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 2b — BIOLOGISK STATUSCHECK -->
+  <div id="step2b" style="display:none">
+    <div class="abox">
+      <span class="abox-title">[ STEG 3 / 4 — BIOLOGISK STATUSCHECK ]</span>
+      <p class="pip-body" style="margin-bottom:.6rem">
+        Innan uppdraget kan slutföras måste systemet verifiera din<br>
+        <strong>grundläggande operativa kapacitet.</strong>
+      </p>
+      <div class="tlog" style="margin-bottom:1.1rem">
+        <div class="wa">&gt; Söker efter biologiska markörer...</div>
+        <div class="wa">&gt; Blodsockernivå: <span class="er">OKÄND</span></div>
+        <div class="wa">&gt; Koffeinindex: <span class="er">OKÄNT</span></div>
+        <div class="dm">&gt; Manuell verifiering krävs.</div>
+      </div>
+      <p class="pip-body" style="margin-bottom:1.2rem">
+        <strong>Har du fått i dig macka? Druckit kaffe?</strong><br>
+        <span style="color:var(--gray);font-size:1.1rem">Detta är en officiell systemfråga. Svara ärligt.</span>
+      </p>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <button class="cbtn" onclick="macka('bada')">Ja på båda. Jag är redo.</button>
+        <button class="cbtn" onclick="macka('kaffe')">Kaffe ja. Macka nej. Det får räcka.</button>
+        <button class="cbtn" onclick="macka('macka')">Macka ja. Inget kaffe. Oroande.</button>
+        <button class="cbtn" onclick="macka('inget')">Nej. Ingenting. Jag lever på viljestyrka.</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEG 3 -->
+  <div id="step3" style="display:none">
+    <div class="abox">
+      <span class="abox-title">[ STEG 4 / 4 — SLUTANALYS ]</span>
+      <div class="pbar-wrap"><div class="pbar-fill" style="width:100%"></div></div>
+      <div class="rbox" id="responseBox"></div>
+      <div class="rbox" id="mackaBox" style="display:none;margin-top:.5rem;border-left-color:var(--pip-dim);color:var(--pip);background:rgba(80,250,123,.03)"></div>
+      <div class="tlog" style="margin-top:.9rem">
+        <div><span class="ok">  ✓</span>  Analys av föregående sammanhang &nbsp;..........&nbsp; KLAR</div>
+        <div><span class="ok">  ✓</span>  Matchning mot kollegial struktur &nbsp;..........&nbsp; KLAR</div>
+        <div><span class="wa">  !</span>  Lokal information &nbsp;......................&nbsp; OFULLSTÄNDIG</div>
+        <div><span class="wa">  !</span>  Sals- och rumsdata &nbsp;....................&nbsp; EJ REGISTRERAD</div>
+        <div id="mackaLogRow"><span class="wa">  !</span>  Biologisk kapacitet &nbsp;..................&nbsp; <span class="wa">SE NEDAN</span></div>
+        <div><span class="ok">  ✓</span>  Uppdragsparametrar &nbsp;....................&nbsp; IDENTIFIERADE</div>
+        <div><span class="ok">  ✓</span>  Instruktionsstatus &nbsp;....................&nbsp; REDO FÖR LEVERANS</div>
+      </div>
+      <div style="margin-top:1.3rem">
+        <button class="pip-btn" onclick="showScreen3()">→&nbsp; VISA SLUTRAPPORT</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ════════════════════════════════════════════════
+     SKÄRM 3 — SLUTINSTRUKTION
+     ════════════════════════════════════════════════ -->
+<section class="screen" id="screen3">
+
+  <div class="topbar">
+    <span class="topbar-id">UPPDRAGSORDER 0408 // KONFIDENTIALITETSNIVÅ: INGEN</span>
+    <span class="topbar-cd" id="cd3">BERÄKNAR...</span>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <div style="text-align:center;font-size:1.5rem;color:var(--pip-dim);letter-spacing:.2em;border:2px solid var(--pip-dim);padding:.6rem;background:var(--panel-bg)">
+    ▓▓&nbsp; DIREKTIV TILL PERSONAL — KONFERENS 8 APRIL &nbsp;▓▓
+  </div>
+
+  <div class="abox">
+    <span class="abox-title">[ INSTRUKTIONER — LÄS NOGGRANT. EN GÅNG RÄCKER. ]</span>
+
+    <div class="orow">
+      <span class="onum">[01]</span>
+      <span>Återgå till <span class="hi">samma grupp som vid förra tillfället.</span></span>
+    </div>
+    <div class="orow">
+      <span class="onum">[02]</span>
+      <span>Fortsätt arbetet med <span class="hi">ert escape room-upplägg.</span></span>
+    </div>
+    <div class="orow">
+      <span class="onum">[03]</span>
+      <span>Målet idag är att ha en <span class="hi">färdig produkt.</span></span>
+    </div>
+    <div class="orow">
+      <span class="onum">[04]</span>
+      <div>
+        Produkten ska presenteras eller laddas upp vid ett <span class="hi">senare tillfälle.</span><br>
+        <span class="nt">Exakt hur detta sker är ännu inte fastställt. Det är inte ett misstag. Det är ett faktum.</span>
+      </div>
+    </div>
+    <div class="orow">
+      <span class="onum">[05]</span>
+      <span>Du ska vara på plats i din grupp senast <span class="wa">15:45.</span></span>
+    </div>
+    <div class="orow">
+      <span class="onum">[06]</span>
+      <div>
+        Var gruppen befinner sig är <span class="wa">inte registrerat i detta system.</span><br>
+        Du behöver lokalisera din grupp på egen hand.<br>
+        <span class="nt">(Det är inte ett test. Vi vet faktiskt inte heller.)</span>
+      </div>
+    </div>
+    <div class="orow">
+      <span class="onum">[07]</span>
+      <div>
+        Deltog du inte förra gången? Hör av dig till
+        <span class="hi">ämnesansvarig i det ämne du undervisar i.</span><br>
+        De vet vad som gäller.<br>
+        <span class="nt">Vet du inte vem det är, vilket ämne du menar, eller vad du ska göra?<br>
+        Då hör du av dig till <span style="color:var(--pip-bright)">Sebastian</span> eller <span style="color:var(--pip-bright)">Maria K</span> på Teams.</span>
+      </div>
+    </div>
+
+    <div class="orow">
+      <span class="onum">[08]</span>
+      <div>
+        Klockan <span class="hi">17:00</span> är tillfället slut.
+        Det är <span class="hi">ingen återsamling</span> — då är det <span class="hi">fritt fram att gå hem.</span><br>
+        <span class="nt">Det är inte en fälla. Det är sant.</span>
+      </div>
+    </div>
+
+    <div class="orow">
+      <span class="onum">[09]</span>
+      <div>
+        <span class="hi">Sebastian</span> och <span class="hi">Maria K</span> finns tillgängliga på <span class="hi">Teams</span> under hela tillfället.<br>
+        <span class="nt">Frågor, funderingar, existentiell osäkerhet — allt hanteras där.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <div style="text-align:center">
+    <div style="font-size:1.25rem;color:var(--pip-dim);letter-spacing:.1em;margin-bottom:.4rem">
+      TID TILL DEADLINE 15:45
+    </div>
+    <div class="cd-big" id="cd3Big">—:——</div>
+  </div>
+
+  <div class="sep">════════════════════════════════════════════════════════════════════════</div>
+
+  <div class="final-line">
+    Slutdestination: delvis okänd. &nbsp;│&nbsp; Uppdrag: helt tydligt.
+  </div>
+
+  <div style="text-align:center">
+    <button class="pip-btn pip-btn-amber" onclick="confirmMission()">
+      ✓&nbsp; JAG HAR FÖRSTÅTT UPPDRAGET
+    </button>
+  </div>
+
+  <div id="confirmMsg" style="display:none;font-size:1.4rem;color:var(--pip);text-align:center;line-height:1.9;letter-spacing:.06em;padding:.6rem 0">
+    Bekräftelse mottagen.<br>
+    <span style="color:var(--gray)">Du förväntas nu faktiskt göra det.</span><br>
+    <span style="color:var(--gray);font-size:1.15rem">Systemet önskar dig en produktiv APT.</span>
+  </div>
+
+  <button class="restart-link" onclick="restart()">⟳ starta om aktiviteten</button>
+
+</section>
+
+
+<script>
+// ── KONFIGURATION ──
+const DEADLINE_H = 15;
+const DEADLINE_M = 45;
+
+// ── LJUD ──
+const audio   = document.getElementById('bgAudio');
+const muteBtn = document.getElementById('muteBtn');
+let audioOn = false, muted = false;
+
+function tryAudio() {
+  if (audioOn) return;
+  audio.volume = 0.3;
+  audio.play().then(() => {
+    audioOn = true;
+    muteBtn.style.display = 'block';
+    muteBtn.textContent = '🔊 LJUD AV';
+  }).catch(() => {
+    muteBtn.style.display = 'block';
+    muteBtn.textContent = '▶ STARTA LJUD';
+    muteBtn.onclick = () => {
+      audio.play().then(() => { audioOn = true; muteBtn.textContent = '🔊 LJUD AV'; muteBtn.onclick = toggleMute; });
+    };
+  });
+}
+function toggleMute() {
+  muted = !muted;
+  audio.muted = muted;
+  muteBtn.textContent = muted ? '🔇 LJUD PÅ' : '🔊 LJUD AV';
+}
+
+// ── NEDRÄKNING ──
+function getCD() {
+  const now = new Date(), dead = new Date(now);
+  dead.setHours(DEADLINE_H, DEADLINE_M, 0, 0);
+  const diff = dead - now;
+  if (diff <= 0) return { expired: true };
+  const tot = Math.floor(diff / 1000);
+  return { expired: false, m: Math.floor(tot/60), s: tot%60, urgent: Math.floor(tot/60) < 5 };
+}
+
+function tick() {
+  const cd = getCD();
+  const txt = cd.expired
+    ? '— TIDSGRÄNSEN HAR PASSERAT —'
+    : `DEADLINE 15:45 — ${cd.m}:${String(cd.s).padStart(2,'0')} KVAR`;
+  const cls = cd.expired ? 'expired' : cd.urgent ? 'urgent' : '';
+
+  ['cd1','cd2','cd3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = txt;
+    el.className = 'topbar-cd ' + cls;
+  });
+
+  const big = document.getElementById('cd3Big');
+  if (!big) return;
+  if (cd.expired) {
+    big.textContent = 'TIDSGRÄNSEN HAR PASSERAT';
+    big.className = 'cd-big red';
+    big.style.fontSize = 'clamp(1.5rem,5vw,3rem)';
+  } else {
+    big.textContent = `${cd.m}:${String(cd.s).padStart(2,'0')}`;
+    big.className = cd.urgent ? 'cd-big red' : 'cd-big';
+    big.style.fontSize = '';
+  }
+}
+setInterval(tick, 1000);
+tick();
+
+// ── NAVIGATION ──
+function startMission() {
+  tryAudio();
+  document.getElementById('screen1').classList.remove('active');
+  document.getElementById('screen2').classList.add('active');
+  runScan();
+}
+
+// ── SCANNING ──
+const MSGS = [
+  { t:400,  h:'<div class="dm">&gt; Initierar systemkontroll...</div>' },
+  { t:900,  h:'<div class="dm">&gt; Kontrollerar personalregister...</div>' },
+  { t:1400, h:'<div class="ok">&gt; ANALYS AV FÖREGÅENDE SAMMANHANG...</div>' },
+  { t:2050, h:'<div class="dm">&gt; Söker grupptillhörighet...</div>' },
+  { t:2700, h:'<div class="ok">&gt; MATCHNING MOT KOLLEGIAL STRUKTUR...</div>' },
+  { t:3200, h:'<div class="wa">&gt; Lokal information: OFULLSTÄNDIG</div>' },
+  { t:3800, h:'<div class="wa">&gt; Sals- och rumsdata: EJ TILLGÄNGLIG</div>' },
+  { t:4300, h:'<div class="dm">&gt; Söker alternativ informationskälla...</div>' },
+  { t:4900, h:'<div class="er">&gt; Alternativ informationskälla: SAKNAS</div>' },
+  { t:5400, h:'<div class="wa">&gt; Accepterar situationens ofrånkomlighet.</div>' },
+  { t:6000, h:'<div class="ok">&gt; Förbereder identitetsverifiering...</div>' },
+];
+
+function runScan() {
+  const log = document.getElementById('scanLog');
+  const bar = document.getElementById('scanBar');
+  log.innerHTML = '';
+  MSGS.forEach((msg, i) => {
+    setTimeout(() => {
+      log.insertAdjacentHTML('beforeend', msg.h);
+      bar.style.width = ((i+1)/MSGS.length*100) + '%';
+      log.scrollTop = log.scrollHeight;
+    }, msg.t);
+  });
+  setTimeout(() => {
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+  }, 6800);
+}
+
+// ── SVAR ESCAPE ROOM ──
+const RESP = {
+  ja:     'IDENTITETSSTATUS: BEKRÄFTAD.<br>Du är bekant med sammanhanget. Ditt uppdrag är tydligt.<br>Återgå till din grupp och slutför arbetet.',
+  nej:    'IDENTITETSSTATUS: OREGISTRERAD FÖR FÖREGÅENDE SESSION.<br>Systemet noterar din frånvaro utan att döma.<br>Primär instruktion: hör av dig till <strong>ämnesansvarig i det ämne du undervisar i</strong>.<br>De vet var gruppen är och vad som gäller.<br>Om du inte vet vem det är, vilket ämne du menar, eller vad du ska göra:<br>kontakta Sebastian eller Maria K på Teams.<br>De hanterar situationer av typen: okänd variabel.',
+  osaker: 'IDENTITETSSTATUS: TVETYDIG — accepteras.<br>Systemet registrerar din öppenhet inför osäkerheten.<br>Oavsett deltagandestatus gäller samma slutinstruktion.<br>Fortsätt. Det löser sig.'
+};
+function answer(val) {
+  document.getElementById('step2').style.display = 'none';
+  // Spara svar för slutloggen men visa macka-steget härnäst
+  const box = document.getElementById('responseBox');
+  box.innerHTML = '// SYSTEMRESPONS: ' + RESP[val];
+  box.style.display = 'block'; // visas i steg 3 (step3)
+  box.style.display = 'none';  // göm tills step3 visas
+  window._escapeRoomSvar = val;
+  document.getElementById('step2b').style.display = 'block';
+}
+
+// ── SVAR MACKA ──
+const MACKA_RESP = {
+  bada:   { txt: 'BIOLOGISK STATUS: <span class="ok">OPTIMAL</span><br>Macka: ✓&nbsp; Kaffe: ✓<br>Du är förmodligen den mest förberedda personen i byggnaden.', cls: 'ok', logTxt: '<span class="ok">  ✓</span>  Biologisk kapacitet &nbsp;..................&nbsp; <span class="ok">OPTIMAL</span>' },
+  kaffe:  { txt: 'BIOLOGISK STATUS: <span class="wa">ACCEPTABEL</span><br>Kaffe: ✓&nbsp; Macka: ✗<br>Systemet rekommenderar ett kex inom de närmaste tio minuterna. Det är inte ett krav. Men det är en rekommendation.', cls: 'wa', logTxt: '<span class="wa">  !</span>  Biologisk kapacitet &nbsp;..................&nbsp; <span class="wa">ACCEPTABEL (makabrist)</span>' },
+  macka:  { txt: 'BIOLOGISK STATUS: <span class="wa">SUBOPTIMAL</span><br>Macka: ✓&nbsp; Kaffe: ✗<br>Systemet noterar detta med mild oro. Du är välkommen att hämta kaffe. Klockan är dock 15:30. Det är du som väljer.', cls: 'wa', logTxt: '<span class="wa">  !</span>  Biologisk kapacitet &nbsp;..................&nbsp; <span class="wa">SUBOPTIMAL (koffeinbrist)</span>' },
+  inget:  { txt: 'BIOLOGISK STATUS: <span class="er">KRITISK</span><br>Macka: ✗&nbsp; Kaffe: ✗<br>Systemet registrerar detta utan att kommentera ytterligare.<br><span style="color:var(--gray);font-size:1.05rem">...systemet kommenterar ändå: äta något.</span>', cls: 'er', logTxt: '<span class="er">  ✗</span>  Biologisk kapacitet &nbsp;..................&nbsp; <span class="er">KRITISK (total avsaknad)</span>' }
+};
+function macka(val) {
+  document.getElementById('step2b').style.display = 'none';
+  document.getElementById('step3').style.display = 'block';
+  // Visa escape room-svaret nu
+  const box = document.getElementById('responseBox');
+  box.innerHTML = '// SYSTEMRESPONS: ' + RESP[window._escapeRoomSvar || 'ja'];
+  box.style.display = 'block';
+  // Visa macka-svaret i en ny ruta
+  const mbox = document.getElementById('mackaBox');
+  const m = MACKA_RESP[val];
+  mbox.innerHTML = '// BIOLOGISK STATUSRAPPORT: ' + m.txt;
+  mbox.style.display = 'block';
+  // Uppdatera loggraden
+  document.getElementById('mackaLogRow').innerHTML = m.logTxt;
+}
+
+function showScreen3() {
+  document.getElementById('screen2').classList.remove('active');
+  document.getElementById('screen3').classList.add('active');
+  tick();
+}
+
+function confirmMission() {
+  document.getElementById('confirmMsg').style.display = 'block';
+  if (audioOn && !muted) {
+    let v = audio.volume;
+    const f = setInterval(() => { v = Math.max(0, v-.03); audio.volume = v; if (!v){clearInterval(f);audio.pause();} }, 120);
+  }
+}
+
+function restart() {
+  document.getElementById('confirmMsg').style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step2b').style.display = 'none';
+  document.getElementById('step3').style.display = 'none';
+  document.getElementById('mackaBox').style.display = 'none';
+  document.getElementById('screen3').classList.remove('active');
+  document.getElementById('screen2').classList.remove('active');
+  document.getElementById('screen1').classList.add('active');
+  window._escapeRoomSvar = null;
+  if (audioOn) { audio.volume = 0.3; audio.currentTime = 0; audio.play(); }
+}
+</script>
+</body>
+</html>

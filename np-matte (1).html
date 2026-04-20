@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klara NP i matte – åk 9</title>
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --paper: #fbf8f2;
+    --ink: #1f1b16;
+    --muted: #6b6359;
+    --line: #d9d0c1;
+    --accent: #8a3a1f;
+    --accent-soft: #e8dccf;
+    --good: #3a6b4a;
+    --good-soft: #dce8dd;
+    --bad: #8a3a1f;
+    --bad-soft: #f0dcd3;
+    --shadow: 0 1px 0 rgba(31,27,22,0.04), 0 6px 24px rgba(31,27,22,0.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: 18px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 120px;
+  }
+  header.site {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+  }
+  header.site h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+  header.site .prog {
+    font-size: 14px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 28px 0 10px;
+  }
+  p { margin: 0 0 14px; }
+  .lead { color: var(--muted); font-size: 17px; margin-bottom: 24px; }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 26px 26px 22px;
+    box-shadow: var(--shadow);
+  }
+  .card + .card { margin-top: 16px; }
+
+  button, .btn {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 11px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.08s ease, opacity 0.15s ease;
+    letter-spacing: 0.01em;
+  }
+  button:hover { opacity: 0.9; }
+  button:active { transform: translateY(1px); }
+  button.ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  button.ghost:hover { background: var(--accent-soft); }
+  button.small { font-size: 14px; padding: 8px 14px; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .q-prompt {
+    font-size: 22px;
+    line-height: 1.4;
+    margin: 6px 0 18px;
+    font-weight: 500;
+  }
+  .q-prompt .math {
+    font-family: 'Cambria Math', Cambria, 'Times New Roman', serif;
+    font-weight: 500;
+  }
+  .choices { display: grid; gap: 10px; }
+  .choice {
+    display: block;
+    text-align: left;
+    padding: 14px 18px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 17px;
+    cursor: pointer;
+    font-family: 'Cambria Math', Cambria, 'Times New Roman', serif;
+    transition: background 0.1s ease, border-color 0.1s ease;
+  }
+  .choice:hover { background: var(--accent-soft); border-color: #c3b39e; }
+  .choice.picked-correct {
+    background: var(--good-soft);
+    border-color: var(--good);
+    color: var(--good);
+  }
+  .choice.picked-wrong {
+    background: var(--bad-soft);
+    border-color: var(--bad);
+    color: var(--bad);
+  }
+  .choice.reveal-correct {
+    border-color: var(--good);
+    color: var(--good);
+  }
+  .choice:disabled { cursor: default; }
+
+  input.answer {
+    font-family: 'Cambria Math', Cambria, serif;
+    font-size: 20px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper);
+    width: 200px;
+    color: var(--ink);
+  }
+  input.answer:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 4px;
+    border-left: 3px solid;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .feedback.good { background: var(--good-soft); border-color: var(--good); }
+  .feedback.bad { background: var(--bad-soft); border-color: var(--bad); }
+  .feedback .tag {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .feedback.good .tag { color: var(--good); }
+  .feedback.bad .tag { color: var(--bad); }
+  .feedback .steps {
+    background: rgba(255,255,255,0.55);
+    border-radius: 3px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-family: 'Cambria Math', Cambria, serif;
+  }
+  .feedback .steps div { margin: 3px 0; }
+
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .row.end { justify-content: flex-end; }
+  .spacer { flex: 1; }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  @media (min-width: 560px) {
+    .topic-grid { grid-template-columns: 1fr 1fr; }
+  }
+  .topic-btn {
+    text-align: left;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 16px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+  .topic-btn:hover { background: var(--accent-soft); border-color: #c3b39e; }
+  .topic-btn .name { font-weight: 600; font-size: 17px; display: block; }
+  .topic-btn .meta { font-size: 14px; color: var(--muted); margin-top: 4px; display: block; }
+  .topic-btn .bar {
+    margin-top: 10px;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .topic-btn .bar span {
+    display: block;
+    height: 100%;
+    background: var(--good);
+    transition: width 0.3s ease;
+  }
+
+  .muted { color: var(--muted); font-size: 14px; }
+  .kbd {
+    font-family: 'Cambria Math', serif;
+    background: var(--accent-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.95em;
+  }
+
+  .diag-intro ol { padding-left: 22px; }
+  .diag-intro li { margin: 6px 0; }
+
+  .result-big {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+    margin: 10px 0 4px;
+    font-family: 'Iowan Old Style', Georgia, serif;
+  }
+  .result-label { color: var(--muted); font-size: 15px; }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    margin: 14px 0 0;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--line);
+  }
+  .dot.on { background: var(--ink); }
+
+  .linkrow {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hint-box {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--accent-soft);
+    border-radius: 4px;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .hint-box strong { color: var(--accent); }
+
+  svg.fig { display: block; margin: 8px 0 16px; }
+
+  /* Staplade bråk */
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: -0.45em;
+    margin: 0 0.15em;
+    font-size: 0.92em;
+    line-height: 1;
+  }
+  .frac .num {
+    display: block;
+    padding: 0 0.25em 0.05em;
+    border-bottom: 1.2px solid currentColor;
+  }
+  .frac .den {
+    display: block;
+    padding: 0.05em 0.25em 0;
+  }
+  /* I knappar och större sammanhang får bråken lite mer andrum */
+  .choice .frac { font-size: 1em; vertical-align: -0.5em; }
+  .q-prompt .frac { font-size: 0.95em; }
+
+  /* Resonemang */
+  textarea.solution {
+    width: 100%;
+    min-height: 180px;
+    padding: 14px;
+    font-family: 'Iowan Old Style', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.5;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  textarea.solution:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .solution-box {
+    background: #fefdf9;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--good);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .solution-box .solution-step {
+    margin-top: 12px;
+    color: var(--accent);
+    font-size: 14px;
+    letter-spacing: 0.03em;
+  }
+  .solution-box .solution-step:first-child { margin-top: 0; }
+  .solution-box div { margin: 2px 0; }
+
+  .checklist {
+    margin-top: 14px;
+    padding: 14px 18px;
+    background: var(--accent-soft);
+    border-radius: 4px;
+  }
+  .checklist h4 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .checklist label {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .checklist input[type="checkbox"] {
+    margin-top: 3px;
+    accent-color: var(--good);
+    cursor: pointer;
+  }
+
+  /* Strategikort */
+  .strategy-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin: 12px 0;
+  }
+  .strategy-card h4 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .strategy-card p { margin: 6px 0; font-size: 15px; }
+  .strategy-card .example {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 3px;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* Lärarloggbok */
+  .teacher-log {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2a231b;
+    color: #f5f1ea;
+    padding: 16px 20px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .teacher-log h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #d9c9b3;
+  }
+  .teacher-log textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 10px;
+    background: #1f1b16;
+    color: #f5f1ea;
+    border: 1px solid #4a3f33;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  .teacher-log textarea:focus { outline: 1px solid #d9c9b3; }
+  .teacher-log .log-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .teacher-log button {
+    font-size: 13px;
+    padding: 6px 12px;
+    background: #d9c9b3;
+    color: #1f1b16;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .teacher-log button.ghost {
+    background: transparent;
+    color: #d9c9b3;
+    border: 1px solid #4a3f33;
+  }
+  .teacher-log .entries {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .teacher-log .entry {
+    padding: 6px 0;
+    border-bottom: 1px solid #3a3127;
+  }
+  .teacher-log .entry .when {
+    color: #a39482;
+    font-size: 12px;
+  }
+  .teacher-log .entry .ctx {
+    color: #d9c9b3;
+    font-size: 12px;
+    font-style: italic;
+  }
+  .log-toggle {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #2a231b;
+    color: #f5f1ea;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 999;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+  }
+  .log-toggle:hover { opacity: 1; }
+  .ext-link {
+    display: block;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin: 10px 0;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.1s ease;
+  }
+  .ext-link:hover {
+    background: var(--accent-soft);
+    border-color: #c3b39e;
+  }
+  .ext-link .lname {
+    font-weight: 600;
+    font-size: 16px;
+    display: block;
+  }
+  .ext-link .ldesc {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 3px;
+    display: block;
+  }
+  .ext-link .lurl {
+    color: var(--accent);
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
+    font-family: 'Cambria Math', serif;
+  }
+
+  footer.site {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer.site a {
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font: inherit;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  .fade { animation: fadein 0.25s ease; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <h1>Klara NP – matte åk 9</h1>
+    <div class="prog" id="progLabel">Välkommen</div>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="site">
+    <span>Ett träningsverktyg byggt för dig som vill bli godkänd.</span>
+    <a id="resetBtn">Börja om från början</a>
+  </footer>
+</div>
+
+<!-- Lärarloggbok - dold som standard, öppnas med knapp -->
+<button class="log-toggle" id="logToggle" title="Lärarloggbok" style="display:none;">L</button>
+<div class="teacher-log" id="teacherLog" style="display:none;">
+  <h4>Lärarloggbok <span style="font-weight:400; text-transform:none; letter-spacing:0; color:#a39482;">— endast synlig för dig</span></h4>
+  <textarea id="logInput" placeholder="Vad fastnade eleven på? Vad var otydligt? Vad saknades?"></textarea>
+  <div class="log-row">
+    <button id="logSave">Spara anteckning</button>
+    <button class="ghost" id="logExport">Exportera alla</button>
+    <button class="ghost" id="logClose">Dölj</button>
+  </div>
+  <div class="entries" id="logEntries"></div>
+</div>
+
+<script>
+/* ============================================================
+   KLARA NP – MATTE ÅK 9
+   Ett komplett träningsverktyg för E-nivå.
+   Bygger på: diagnos -> riktad träning -> blandat prov.
+============================================================ */
+
+const STATE_KEY = 'np_matte_state_v1';
+const VERSION = 'v1.0 – 19 apr 2026';
+
+// Hjälpfunktioner
+const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const pick = arr => arr[rand(0, arr.length - 1)];
+const shuffle = arr => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = rand(0, i);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
+const simplifyFrac = (n, d) => {
+  const g = gcd(n, d);
+  return [n / g, d / g];
+};
+const fmtNum = n => {
+  if (Number.isInteger(n)) return String(n);
+  return String(Math.round(n * 1000) / 1000).replace('.', ',');
+};
+const parseAnswer = s => {
+  if (s == null) return NaN;
+  return parseFloat(String(s).trim().replace(',', '.').replace(/\s/g, ''));
+};
+
+// Matematisk formatering
+const frac = (n, d) => `<span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span>`;
+const sup = (base, exp) => `${base}<sup>${exp}</sup>`;
+const sq = base => `${base}²`;
+const cube = base => `${base}³`;
+
+/* ============================================================
+   UPPGIFTSGENERATORER
+   Varje generator returnerar ett objekt:
+   {
+     type: 'mc' | 'input',
+     prompt: string (HTML tillåtet i .math-span),
+     figure: optional SVG string,
+     choices: [str,...]  (om mc),
+     correctIndex: int   (om mc),
+     answer: number      (om input, används med tolerans),
+     tolerance: number   (default 0.001),
+     steps: [str,...]    (lösningsgång)
+   }
+============================================================ */
+
+const GENS = {
+  // 1. TALUPPFATTNING
+  tal: [
+    // Procent av tal
+    () => {
+      const p = pick([10, 15, 20, 25, 30, 40, 50, 60, 75]);
+      const base = pick([40, 60, 80, 120, 160, 200, 240, 300, 400, 500]);
+      const ans = base * p / 100;
+      return {
+        type: 'input',
+        prompt: `Hur mycket är <span class="math">${p} %</span> av <span class="math">${base}</span>?`,
+        answer: ans,
+        steps: [
+          `${p} % betyder ${p} hundradelar, alltså ${p}/100 = ${p/100}.`,
+          `Du räknar: ${base} · ${p/100} = ${fmtNum(ans)}.`,
+          `Svar: ${fmtNum(ans)}`
+        ]
+      };
+    },
+    // Rabatt
+    () => {
+      const pris = pick([200, 250, 300, 400, 500, 600, 800, 1000, 1200]);
+      const rabatt = pick([10, 15, 20, 25, 30, 40, 50]);
+      const nyttPris = pris * (100 - rabatt) / 100;
+      return {
+        type: 'input',
+        prompt: `En tröja kostar <span class="math">${pris} kr</span>. Den säljs med <span class="math">${rabatt} %</span> rabatt. Vad kostar den nu?`,
+        answer: nyttPris,
+        steps: [
+          `Du betalar ${100 - rabatt} % av priset (${100}% − ${rabatt}% = ${100 - rabatt}%).`,
+          `${pris} · ${(100 - rabatt)/100} = ${fmtNum(nyttPris)} kr.`,
+          `Svar: ${fmtNum(nyttPris)} kr`
+        ]
+      };
+    },
+    // Bråk av helhet
+    () => {
+      const d = pick([3, 4, 5, 6, 8, 10]);
+      const n = rand(1, d - 1);
+      const helhet = d * pick([3, 4, 5, 6, 8, 10]);
+      const ans = helhet * n / d;
+      return {
+        type: 'input',
+        prompt: `Hur mycket är ${frac(n, d)} av <span class="math">${helhet}</span>?`,
+        answer: ans,
+        steps: [
+          `Dela först ${helhet} i ${d} lika delar: ${helhet} ÷ ${d} = ${helhet/d}.`,
+          `Ta sedan ${n} sådana delar: ${helhet/d} · ${n} = ${fmtNum(ans)}.`,
+          `Svar: ${fmtNum(ans)}`
+        ]
+      };
+    },
+    // Negativa tal - addition/subtraktion
+    () => {
+      const a = rand(-15, -1);
+      const b = rand(3, 12);
+      const ans = a + b;
+      return {
+        type: 'input',
+        prompt: `Räkna ut: <span class="math">${a} + ${b}</span>`,
+        answer: ans,
+        steps: [
+          `Du står på ${a} på tallinjen och går ${b} steg åt höger (plus betyder höger).`,
+          `${a} + ${b} = ${ans}.`,
+          `Svar: ${ans}`
+        ]
+      };
+    },
+    () => {
+      const a = rand(2, 12);
+      const b = rand(3, 15);
+      const ans = a - b;
+      return {
+        type: 'input',
+        prompt: `Räkna ut: <span class="math">${a} − ${b}</span>`,
+        answer: ans,
+        steps: [
+          `Du står på ${a} och går ${b} steg åt vänster (minus betyder vänster).`,
+          `${a} − ${b} = ${ans}.`,
+          `Svar: ${ans}`
+        ]
+      };
+    },
+    // Decimaltal jämförelse
+    () => {
+      const tal = shuffle([
+        (rand(10, 99) / 10).toFixed(1),
+        (rand(100, 999) / 100).toFixed(2),
+        (rand(1, 9) + rand(0, 9) / 10).toFixed(1),
+        (rand(1, 9) + rand(0, 99) / 100).toFixed(2)
+      ]).slice(0, 4);
+      const values = tal.map(t => parseFloat(t));
+      const maxVal = Math.max(...values);
+      const correct = tal[values.indexOf(maxVal)].replace('.', ',');
+      const choices = tal.map(t => t.replace('.', ','));
+      return {
+        type: 'mc',
+        prompt: `Vilket tal är störst?`,
+        choices,
+        correctIndex: choices.indexOf(correct),
+        steps: [
+          `Jämför först heltalsdelen (det som står före kommatecknet).`,
+          `Om de är lika, jämför tiondelar, sedan hundradelar.`,
+          `${correct} är störst.`
+        ]
+      };
+    },
+    // Bråk till decimal
+    () => {
+      const pairs = [
+        [1, 2, 0.5], [1, 4, 0.25], [3, 4, 0.75],
+        [1, 5, 0.2], [2, 5, 0.4], [3, 5, 0.6], [4, 5, 0.8],
+        [1, 10, 0.1], [3, 10, 0.3], [7, 10, 0.7]
+      ];
+      const [n, d, ans] = pick(pairs);
+      return {
+        type: 'input',
+        prompt: `Skriv bråket ${frac(n, d)} som ett decimaltal.`,
+        answer: ans,
+        steps: [
+          `${frac(n, d)} betyder ${n} delat med ${d}.`,
+          `${n} ÷ ${d} = ${fmtNum(ans)}.`,
+          `Svar: ${fmtNum(ans)}`
+        ]
+      };
+    },
+    // Avrundning
+    () => {
+      const tal = (rand(100, 9999) / 10).toFixed(1);
+      const ans = Math.round(parseFloat(tal));
+      return {
+        type: 'input',
+        prompt: `Avrunda talet <span class="math">${tal.replace('.', ',')}</span> till närmaste heltal.`,
+        answer: ans,
+        steps: [
+          `Titta på tiondelen (första siffran efter kommatecknet).`,
+          `Är den 5 eller högre: runda uppåt. Annars: runda nedåt.`,
+          `Svar: ${ans}`
+        ]
+      };
+    },
+    // Procentuell ökning
+    () => {
+      const start = pick([200, 400, 500, 800, 1000]);
+      const p = pick([10, 20, 25, 50]);
+      const ny = start * (100 + p) / 100;
+      return {
+        type: 'input',
+        prompt: `En hyra var <span class="math">${start} kr</span>. Den höjs med <span class="math">${p} %</span>. Vad är den nya hyran?`,
+        answer: ny,
+        steps: [
+          `Den nya hyran är ${100 + p} % av den gamla (100% + ${p}% höjning).`,
+          `${start} · ${(100 + p)/100} = ${fmtNum(ny)} kr.`,
+          `Svar: ${fmtNum(ny)} kr`
+        ]
+      };
+    },
+  ],
+
+  // 2. ALGEBRA
+  algebra: [
+    // Förenkla uttryck
+    () => {
+      const a = rand(2, 8), b = rand(2, 8), c = rand(2, 6);
+      return {
+        type: 'input',
+        prompt: `Förenkla uttrycket: <span class="math">${a}x + ${b}x − ${c}x</span>. Skriv svaret som ett tal framför x (t.ex. 7 om svaret är 7x).`,
+        answer: a + b - c,
+        steps: [
+          `Alla termer har x, så du kan lägga ihop dem.`,
+          `${a}x + ${b}x − ${c}x = (${a} + ${b} − ${c})x = ${a + b - c}x.`,
+          `Svar: ${a + b - c}x`
+        ]
+      };
+    },
+    // Enkel ekvation
+    () => {
+      const a = rand(2, 9);
+      const x = rand(2, 12);
+      const b = a * x;
+      return {
+        type: 'input',
+        prompt: `Lös ekvationen: <span class="math">${a}x = ${b}</span>`,
+        answer: x,
+        steps: [
+          `Dela båda sidor med ${a} för att få x ensamt.`,
+          `x = ${b} ÷ ${a} = ${x}.`,
+          `Svar: x = ${x}`
+        ]
+      };
+    },
+    // Ekvation med två steg
+    () => {
+      const a = rand(2, 6);
+      const x = rand(2, 10);
+      const c = rand(3, 15);
+      const b = a * x + c;
+      return {
+        type: 'input',
+        prompt: `Lös ekvationen: <span class="math">${a}x + ${c} = ${b}</span>`,
+        answer: x,
+        steps: [
+          `Steg 1: Dra bort ${c} från båda sidor. Då får du ${a}x = ${b - c}.`,
+          `Steg 2: Dela båda sidor med ${a}. Då får du x = ${(b-c)/a}.`,
+          `Svar: x = ${x}`
+        ]
+      };
+    },
+    // Sätt in värde
+    () => {
+      const a = rand(2, 6);
+      const b = rand(1, 8);
+      const x = rand(2, 8);
+      const ans = a * x + b;
+      return {
+        type: 'input',
+        prompt: `Vad blir <span class="math">${a}x + ${b}</span> när <span class="math">x = ${x}</span>?`,
+        answer: ans,
+        steps: [
+          `Byt ut x mot ${x} i uttrycket.`,
+          `${a} · ${x} + ${b} = ${a*x} + ${b} = ${ans}.`,
+          `Svar: ${ans}`
+        ]
+      };
+    },
+    // Ekvation med x på båda sidor
+    () => {
+      const x = rand(2, 9);
+      const left = rand(4, 8);
+      const right = rand(2, left - 2);
+      const diff = left - right;
+      const rhs = diff * x;
+      return {
+        type: 'input',
+        prompt: `Lös ekvationen: <span class="math">${left}x = ${right}x + ${rhs}</span>`,
+        answer: x,
+        steps: [
+          `Dra bort ${right}x från båda sidor: ${diff}x = ${rhs}.`,
+          `Dela båda sidor med ${diff}: x = ${rhs} ÷ ${diff} = ${x}.`,
+          `Svar: x = ${x}`
+        ]
+      };
+    },
+    // Skriv uttryck
+    () => {
+      const a = rand(2, 5);
+      const b = rand(10, 40);
+      return {
+        type: 'mc',
+        prompt: `Anna köper <span class="math">${a}</span> biobiljetter. Varje biljett kostar <span class="math">x kr</span>. Dessutom betalar hon <span class="math">${b} kr</span> i serviceavgift totalt. Vilket uttryck beskriver hennes totala kostnad?`,
+        choices: [
+          `${a}x + ${b}`,
+          `${a} + x + ${b}`,
+          `${a}x · ${b}`,
+          `x + ${a} + ${b}`
+        ],
+        correctIndex: 0,
+        steps: [
+          `${a} biljetter som kostar x kr vardera = ${a}x kr.`,
+          `Plus ${b} kr i serviceavgift ger: ${a}x + ${b}.`,
+          `Svar: ${a}x + ${b}`
+        ]
+      };
+    },
+    // Ekvation med negativt
+    () => {
+      const x = rand(3, 10);
+      const a = rand(2, 5);
+      const b = a * x;
+      return {
+        type: 'input',
+        prompt: `Lös ekvationen: <span class="math">${b} − ${a}x = 0</span>`,
+        answer: x,
+        steps: [
+          `Lägg till ${a}x på båda sidor: ${b} = ${a}x.`,
+          `Dela båda sidor med ${a}: x = ${b/a} = ${x}.`,
+          `Svar: x = ${x}`
+        ]
+      };
+    },
+  ],
+
+  // 3. GEOMETRI
+  geometri: [
+    // Omkrets rektangel
+    () => {
+      const b = rand(3, 15);
+      const h = rand(2, 12);
+      const ans = 2 * (b + h);
+      return {
+        type: 'input',
+        prompt: `En rektangel har bredden <span class="math">${b} cm</span> och höjden <span class="math">${h} cm</span>. Vad är omkretsen?`,
+        figure: svgRect(b, h, 'omkrets'),
+        answer: ans,
+        steps: [
+          `Omkrets = alla sidor hoplagda.`,
+          `2 · ${b} + 2 · ${h} = ${2*b} + ${2*h} = ${ans} cm.`,
+          `Svar: ${ans} cm`
+        ]
+      };
+    },
+    // Area rektangel
+    () => {
+      const b = rand(3, 15);
+      const h = rand(3, 12);
+      const ans = b * h;
+      return {
+        type: 'input',
+        prompt: `En rektangel har bredden <span class="math">${b} cm</span> och höjden <span class="math">${h} cm</span>. Vad är arean?`,
+        figure: svgRect(b, h, 'area'),
+        answer: ans,
+        steps: [
+          `Arean av en rektangel = bas · höjd.`,
+          `${b} · ${h} = ${ans} cm².`,
+          `Svar: ${ans} cm²`
+        ]
+      };
+    },
+    // Area triangel
+    () => {
+      const b = pick([4, 6, 8, 10, 12, 14]);
+      const h = pick([3, 5, 6, 8, 9, 10]);
+      const ans = b * h / 2;
+      return {
+        type: 'input',
+        prompt: `En triangel har basen <span class="math">${b} cm</span> och höjden <span class="math">${h} cm</span>. Vad är arean?`,
+        figure: svgTriangle(b, h),
+        answer: ans,
+        steps: [
+          `Arean av en triangel = (bas · höjd) / 2.`,
+          `(${b} · ${h}) / 2 = ${b*h} / 2 = ${fmtNum(ans)} cm².`,
+          `Svar: ${fmtNum(ans)} cm²`
+        ]
+      };
+    },
+    // Area cirkel
+    () => {
+      const r = pick([3, 4, 5, 6, 10]);
+      const ans = Math.PI * r * r;
+      const roundAns = Math.round(ans * 10) / 10;
+      return {
+        type: 'input',
+        prompt: `En cirkel har radien <span class="math">${r} cm</span>. Vad är arean? Avrunda till en decimal. (Använd π ≈ 3,14)`,
+        figure: svgCircle(r),
+        answer: Math.round(3.14 * r * r * 10) / 10,
+        tolerance: 0.5,
+        steps: [
+          `Arean av en cirkel = π · r².`,
+          `3,14 · ${r}² = 3,14 · ${r*r} = ${fmtNum(Math.round(3.14*r*r*100)/100)} cm².`,
+          `Avrundat till en decimal: ${fmtNum(Math.round(3.14*r*r*10)/10)} cm²`
+        ]
+      };
+    },
+    // Omkrets cirkel
+    () => {
+      const r = pick([2, 3, 4, 5, 6, 10]);
+      const ans = Math.round(2 * 3.14 * r * 10) / 10;
+      return {
+        type: 'input',
+        prompt: `En cirkel har radien <span class="math">${r} cm</span>. Vad är omkretsen? Avrunda till en decimal. (Använd π ≈ 3,14)`,
+        figure: svgCircle(r),
+        answer: ans,
+        tolerance: 0.5,
+        steps: [
+          `Omkrets (omkrets) av cirkel = 2 · π · r.`,
+          `2 · 3,14 · ${r} = ${fmtNum(Math.round(2*3.14*r*100)/100)} cm.`,
+          `Avrundat: ${fmtNum(ans)} cm`
+        ]
+      };
+    },
+    // Volym rätblock
+    () => {
+      const l = rand(3, 10);
+      const b = rand(2, 8);
+      const h = rand(2, 6);
+      const ans = l * b * h;
+      return {
+        type: 'input',
+        prompt: `Ett rätblock har längden <span class="math">${l} cm</span>, bredden <span class="math">${b} cm</span> och höjden <span class="math">${h} cm</span>. Vad är volymen?`,
+        answer: ans,
+        steps: [
+          `Volym av rätblock = längd · bredd · höjd.`,
+          `${l} · ${b} · ${h} = ${l*b} · ${h} = ${ans} cm³.`,
+          `Svar: ${ans} cm³`
+        ]
+      };
+    },
+    // Pythagoras
+    () => {
+      const triples = [[3,4,5], [6,8,10], [5,12,13], [9,12,15], [8,15,17]];
+      const [a, b, c] = pick(triples);
+      return {
+        type: 'input',
+        prompt: `I en rätvinklig triangel är kateterna <span class="math">${a} cm</span> och <span class="math">${b} cm</span>. Hur lång är hypotenusan?`,
+        figure: svgRightTriangle(a, b),
+        answer: c,
+        steps: [
+          `Pythagoras sats: a² + b² = c² (där c är hypotenusan).`,
+          `${a}² + ${b}² = ${a*a} + ${b*b} = ${a*a + b*b}.`,
+          `c = √${a*a + b*b} = ${c} cm.`
+        ]
+      };
+    },
+    // Vinkelsumma triangel
+    () => {
+      const v1 = rand(30, 80);
+      const v2 = rand(30, 80);
+      const ans = 180 - v1 - v2;
+      return {
+        type: 'input',
+        prompt: `I en triangel är två vinklar <span class="math">${v1}°</span> och <span class="math">${v2}°</span>. Hur stor är den tredje vinkeln?`,
+        answer: ans,
+        steps: [
+          `Vinklarna i en triangel är alltid 180° tillsammans.`,
+          `180 − ${v1} − ${v2} = ${ans}°.`,
+          `Svar: ${ans}°`
+        ]
+      };
+    },
+    // Skala
+    () => {
+      const skala = pick([50, 100, 200, 500]);
+      const bild = rand(3, 15);
+      const ans = bild * skala / 100;
+      return {
+        type: 'input',
+        prompt: `På en karta i skala <span class="math">1:${skala}</span> är en byggnad <span class="math">${bild} cm</span> lång. Hur lång är den i verkligheten? Svara i meter.`,
+        answer: ans / 100,
+        tolerance: 0.01,
+        steps: [
+          `Skala 1:${skala} betyder att 1 cm på kartan = ${skala} cm i verkligheten.`,
+          `${bild} · ${skala} = ${bild*skala} cm = ${fmtNum(ans/100)} m.`,
+          `Svar: ${fmtNum(ans/100)} m`
+        ]
+      };
+    },
+  ],
+
+  // 4. SAMBAND OCH FUNKTIONER
+  samband: [
+    // Proportionalitet - pris per styck
+    () => {
+      const antal = pick([3, 4, 5, 6, 8]);
+      const styck = pick([12, 15, 20, 25, 30]);
+      const pris = antal * styck;
+      const nyAntal = pick([2, 7, 10]);
+      const ans = nyAntal * styck;
+      return {
+        type: 'input',
+        prompt: `<span class="math">${antal}</span> äpplen kostar <span class="math">${pris} kr</span>. Vad kostar <span class="math">${nyAntal}</span> äpplen?`,
+        answer: ans,
+        steps: [
+          `Först: vad kostar ett äpple? ${pris} ÷ ${antal} = ${styck} kr.`,
+          `Sedan: ${nyAntal} äpplen kostar ${nyAntal} · ${styck} = ${ans} kr.`,
+          `Svar: ${ans} kr`
+        ]
+      };
+    },
+    // Hastighet
+    () => {
+      const v = pick([40, 50, 60, 70, 80, 90]);
+      const t = pick([2, 3, 4, 5]);
+      const ans = v * t;
+      return {
+        type: 'input',
+        prompt: `En bil kör med hastigheten <span class="math">${v} km/h</span>. Hur långt hinner den på <span class="math">${t} timmar</span>?`,
+        answer: ans,
+        steps: [
+          `Sträcka = hastighet · tid.`,
+          `${v} · ${t} = ${ans} km.`,
+          `Svar: ${ans} km`
+        ]
+      };
+    },
+    // Linjär graf - k-värde
+    () => {
+      const k = pick([2, 3, 4, 5, 10, 15]);
+      const m = pick([0, 20, 50, 100]);
+      const x = pick([2, 3, 5, 10]);
+      const ans = k * x + m;
+      const textM = m === 0 ? '' : ` + ${m}`;
+      return {
+        type: 'input',
+        prompt: `En taxi kostar <span class="math">${m} kr</span> i startavgift och sedan <span class="math">${k} kr/km</span>. Vad kostar en resa på <span class="math">${x} km</span>?`,
+        answer: ans,
+        steps: [
+          `Formel: kostnad = ${k} · antal km${textM}.`,
+          `${k} · ${x}${textM ? ` + ${m}` : ''} = ${k*x}${textM ? ` + ${m}` : ''} = ${ans} kr.`,
+          `Svar: ${ans} kr`
+        ]
+      };
+    },
+    // Koordinater
+    () => {
+      const x = rand(1, 5);
+      const y = rand(1, 5);
+      return {
+        type: 'mc',
+        prompt: `En punkt ligger <span class="math">${x}</span> steg åt höger och <span class="math">${y}</span> steg uppåt från origo. Vilka koordinater har punkten?`,
+        choices: [
+          `(${x}, ${y})`,
+          `(${y}, ${x})`,
+          `(${-x}, ${y})`,
+          `(${x}, ${-y})`
+        ],
+        correctIndex: 0,
+        steps: [
+          `Koordinater skrivs (x, y).`,
+          `x är steg åt höger: ${x}. y är steg uppåt: ${y}.`,
+          `Svar: (${x}, ${y})`
+        ]
+      };
+    },
+    // Procent tillbaka
+    () => {
+      const andel = pick([5, 8, 12, 15, 20, 25]);
+      const helhet = pick([50, 100, 200, 400]);
+      const ans = Math.round(andel / helhet * 100);
+      return {
+        type: 'input',
+        prompt: `I en klass med <span class="math">${helhet}</span> elever har <span class="math">${andel}</span> cyklat till skolan. Hur många procent av eleverna är det? Svara med ett heltal.`,
+        answer: ans,
+        steps: [
+          `Andelen är ${andel}/${helhet}.`,
+          `Gör om till procent: (${andel}/${helhet}) · 100 = ${fmtNum(andel/helhet*100)}%.`,
+          `Svar: ${ans}%`
+        ]
+      };
+    },
+    // Tabell - hitta mönster
+    () => {
+      const k = rand(2, 6);
+      const n = rand(6, 12);
+      return {
+        type: 'input',
+        prompt: `I en tabell gäller regeln <span class="math">y = ${k}x</span>. Vilket värde har y när <span class="math">x = ${n}</span>?`,
+        answer: k * n,
+        steps: [
+          `Sätt in x = ${n} i formeln.`,
+          `y = ${k} · ${n} = ${k*n}.`,
+          `Svar: ${k*n}`
+        ]
+      };
+    },
+  ],
+
+  // 5. SANNOLIKHET OCH STATISTIK
+  statistik: [
+    // Medelvärde
+    () => {
+      const n = pick([3, 4, 5]);
+      const tal = Array.from({length: n}, () => rand(2, 20));
+      const sum = tal.reduce((a, b) => a + b, 0);
+      const ans = sum / n;
+      return {
+        type: 'input',
+        prompt: `Vad är medelvärdet av talen <span class="math">${tal.join(', ')}</span>?`,
+        answer: ans,
+        tolerance: 0.01,
+        steps: [
+          `Lägg ihop alla tal: ${tal.join(' + ')} = ${sum}.`,
+          `Dela med antalet (${n}): ${sum} ÷ ${n} = ${fmtNum(ans)}.`,
+          `Svar: ${fmtNum(ans)}`
+        ]
+      };
+    },
+    // Median
+    () => {
+      const tal = shuffle([rand(1,5), rand(6,10), rand(11,15), rand(16,20), rand(21,25)]);
+      const sorted = [...tal].sort((a, b) => a - b);
+      const ans = sorted[2];
+      return {
+        type: 'input',
+        prompt: `Vad är medianen av talen <span class="math">${tal.join(', ')}</span>?`,
+        answer: ans,
+        steps: [
+          `Sortera talen från minst till störst: ${sorted.join(', ')}.`,
+          `Medianen är talet i mitten.`,
+          `Svar: ${ans}`
+        ]
+      };
+    },
+    // Typvärde
+    () => {
+      const t = rand(3, 8);
+      const tal = shuffle([t, t, t, rand(1,2), rand(9, 15), rand(16, 20)]);
+      return {
+        type: 'input',
+        prompt: `Vad är typvärdet (vanligaste talet) av <span class="math">${tal.join(', ')}</span>?`,
+        answer: t,
+        steps: [
+          `Typvärdet är det tal som förekommer flest gånger.`,
+          `Räkna hur ofta varje tal finns. Talet ${t} förekommer ${tal.filter(x=>x===t).length} gånger.`,
+          `Svar: ${t}`
+        ]
+      };
+    },
+    // Sannolikhet - tärning
+    () => {
+      const varianter = [
+        { text: 'att få ett jämnt tal', gynnsamma: '2, 4, 6', g: 3 },
+        { text: 'att få ett udda tal', gynnsamma: '1, 3, 5', g: 3 },
+        { text: 'att få ett tal större än 4', gynnsamma: '5, 6', g: 2 },
+        { text: 'att få ett tal som är minst 3', gynnsamma: '3, 4, 5, 6', g: 4 },
+        { text: 'att få ett tal mindre än 3', gynnsamma: '1, 2', g: 2 },
+      ];
+      const v = pick(varianter);
+      const [n, d] = simplifyFrac(v.g, 6);
+      const rätt = frac(v.g, 6);
+      const rättFörenklad = frac(n, d);
+      const allaAlternativ = [
+        frac(1, 6), frac(2, 6), frac(3, 6), frac(4, 6), frac(5, 6),
+        frac(1, 2), frac(1, 3), frac(2, 3)
+      ];
+      const distraktorer = allaAlternativ.filter(a => a !== rätt && a !== rättFörenklad);
+      const valda = [rätt];
+      while (valda.length < 4) {
+        const d2 = pick(distraktorer);
+        if (!valda.includes(d2)) valda.push(d2);
+      }
+      const choices = shuffle(valda);
+      return {
+        type: 'mc',
+        prompt: `Du slår en tärning (sex sidor). Hur stor är sannolikheten <span class="math">${v.text}</span>?`,
+        choices,
+        correctIndex: choices.indexOf(rätt),
+        steps: [
+          `Gynnsamma utfall: ${v.gynnsamma}.`,
+          `Antal gynnsamma: ${v.g}. Totalt antal utfall: 6.`,
+          `Sannolikhet = ${frac(v.g, 6)}${n !== v.g ? ` (kan också skrivas ${frac(n, d)})` : ''}.`
+        ]
+      };
+    },
+    // Sannolikhet - påse
+    () => {
+      const röda = rand(2, 6);
+      const blå = rand(3, 8);
+      const totalt = röda + blå;
+      const [n, d] = simplifyFrac(röda, totalt);
+      const rätt = frac(röda, totalt);
+      const kandidater = [
+        frac(röda, blå),
+        frac(blå, totalt),
+        frac(blå, röda),
+        frac(1, totalt),
+        frac(totalt, röda),
+      ];
+      const unika = [...new Set(kandidater)].filter(x => x !== rätt);
+      const choices = shuffle([rätt, ...unika.slice(0, 3)]);
+      return {
+        type: 'mc',
+        prompt: `I en påse finns <span class="math">${röda}</span> röda kulor och <span class="math">${blå}</span> blå kulor. Du drar en kula utan att titta. Vad är sannolikheten att få en röd kula?`,
+        choices,
+        correctIndex: choices.indexOf(rätt),
+        steps: [
+          `Antal röda: ${röda}. Totalt antal kulor: ${röda} + ${blå} = ${totalt}.`,
+          `Sannolikhet = gynnsamma/möjliga = ${frac(röda, totalt)}.`,
+          `Svar: ${frac(röda, totalt)}${n !== röda ? ` (förkortas till ${frac(n, d)})` : ''}`
+        ]
+      };
+    },
+    // Diagram - avläs
+    () => {
+      const värden = [rand(3, 8), rand(5, 12), rand(8, 15), rand(4, 10)];
+      const månader = ['Jan', 'Feb', 'Mar', 'Apr'];
+      const max = Math.max(...värden);
+      const idx = värden.indexOf(max);
+      return {
+        type: 'mc',
+        prompt: `Stapeldiagrammet visar antal sålda tröjor per månad. Vilken månad såldes flest tröjor?`,
+        figure: svgBarChart(månader, värden),
+        choices: månader,
+        correctIndex: idx,
+        steps: [
+          `Titta på vilken stapel som är högst.`,
+          `${månader[idx]} hade ${max} sålda tröjor, det är mest.`,
+          `Svar: ${månader[idx]}`
+        ]
+      };
+    },
+  ],
+
+  // 6. PROBLEMLÖSNING (E-nivå, flera steg men överkomligt)
+  problem: [
+    // Pris med moms
+    () => {
+      const pris = pick([400, 500, 800, 1000, 1200, 1500, 2000]);
+      const moms = 25;
+      const ans = pris * 1.25;
+      return {
+        type: 'input',
+        prompt: `En vara kostar <span class="math">${pris} kr</span> utan moms. Moms är <span class="math">25 %</span>. Vad kostar varan med moms?`,
+        answer: ans,
+        steps: [
+          `Moms är 25% av priset: ${pris} · 0,25 = ${pris*0.25} kr.`,
+          `Pris med moms = ${pris} + ${pris*0.25} = ${ans} kr.`,
+          `(Eller ${pris} · 1,25 = ${ans} kr.)`
+        ]
+      };
+    },
+    // Dela på tre
+    () => {
+      const summa = pick([300, 600, 900, 1500, 1800]);
+      const ans = summa / 3;
+      return {
+        type: 'input',
+        prompt: `Tre vänner delar lika på <span class="math">${summa} kr</span>. Hur mycket får var och en?`,
+        answer: ans,
+        steps: [
+          `${summa} ÷ 3 = ${ans} kr.`,
+          `Kontroll: 3 · ${ans} = ${3*ans}. Stämmer.`,
+          `Svar: ${ans} kr`
+        ]
+      };
+    },
+    // Hyra bil per dag
+    () => {
+      const dagpris = pick([250, 300, 400, 500]);
+      const dagar = pick([3, 4, 5, 7]);
+      const kmPris = pick([1, 2, 3]);
+      const km = pick([100, 200, 300, 500]);
+      const ans = dagpris * dagar + kmPris * km;
+      return {
+        type: 'input',
+        prompt: `En bil hyrs för <span class="math">${dagpris} kr/dag</span> plus <span class="math">${kmPris} kr/km</span>. Hur mycket kostar det att hyra i <span class="math">${dagar} dagar</span> och köra <span class="math">${km} km</span>?`,
+        answer: ans,
+        steps: [
+          `Kostnad för dagar: ${dagpris} · ${dagar} = ${dagpris*dagar} kr.`,
+          `Kostnad för km: ${kmPris} · ${km} = ${kmPris*km} kr.`,
+          `Totalt: ${dagpris*dagar} + ${kmPris*km} = ${ans} kr.`
+        ]
+      };
+    },
+    // Väggtapetsering
+    () => {
+      const b = pick([3, 4, 5, 6]);
+      const h = pick([2, 3, 4]);
+      const rullBredd = 1;
+      const rullLängd = pick([5, 10]);
+      const area = b * h;
+      const rullArea = rullBredd * rullLängd;
+      const ans = Math.ceil(area / rullArea);
+      return {
+        type: 'input',
+        prompt: `En vägg är <span class="math">${b} m</span> bred och <span class="math">${h} m</span> hög. En tapetrulle räcker till <span class="math">${rullArea} m²</span>. Hur många rullar behövs (minst)?`,
+        answer: ans,
+        steps: [
+          `Vägens area: ${b} · ${h} = ${area} m².`,
+          `${area} ÷ ${rullArea} = ${fmtNum(area/rullArea)}.`,
+          `Du kan inte köpa delar av rullar, så du behöver ${ans} rullar.`
+        ]
+      };
+    },
+    // Recept - räkna om
+    () => {
+      // Välj orig och ny så att ny/orig alltid blir ett snällt tal
+      const pairs = [[2, 4], [2, 6], [2, 8], [3, 6], [3, 9], [4, 8], [4, 12], [2, 10]];
+      const [orig, ny] = pick(pairs);
+      const mjöl = pick([100, 150, 200, 300]);
+      const ans = mjöl * ny / orig;
+      return {
+        type: 'input',
+        prompt: `Ett recept för <span class="math">${orig}</span> personer kräver <span class="math">${mjöl} g</span> mjöl. Hur mycket mjöl behövs för <span class="math">${ny}</span> personer?`,
+        answer: ans,
+        steps: [
+          `Per person: ${mjöl} ÷ ${orig} = ${mjöl/orig} g.`,
+          `För ${ny} personer: ${mjöl/orig} · ${ny} = ${ans} g.`,
+          `Svar: ${ans} g`
+        ]
+      };
+    },
+    // Spara till
+    () => {
+      const mål = pick([1200, 2400, 3600, 4800]);
+      const perVecka = pick([100, 200, 300, 400]);
+      const ans = mål / perVecka;
+      return {
+        type: 'input',
+        prompt: `Du vill spara <span class="math">${mål} kr</span>. Du sparar <span class="math">${perVecka} kr i veckan</span>. Hur många veckor tar det?`,
+        answer: ans,
+        steps: [
+          `${mål} ÷ ${perVecka} = ${ans} veckor.`,
+          `Kontroll: ${ans} · ${perVecka} = ${ans*perVecka} kr. Stämmer.`,
+          `Svar: ${ans} veckor`
+        ]
+      };
+    },
+  ],
+};
+
+/* ============================================================
+   RESONEMANGSUPPGIFTER
+   Längre problem där eleven skriver lösning och jämför med exempel.
+============================================================ */
+const RESONEMANG = [
+  {
+    id: 'r1',
+    område: 'Geometri + problemlösning',
+    uppgift: `Anna ska måla en vägg i sitt rum. Väggen är <span class="math">4 m</span> bred och <span class="math">2,5 m</span> hög. På väggen finns ett fönster som är <span class="math">1,2 m · 1 m</span>.<br><br>
+      <strong>a)</strong> Hur stor yta ska Anna måla?<br>
+      <strong>b)</strong> En burk färg räcker till <span class="math">6 m²</span> och kostar <span class="math">149 kr</span>. Hur många burkar behöver hon köpa, och vad blir det totalt?`,
+    exempellösning: `
+      <div class="solution-step"><strong>a) Hur stor yta?</strong></div>
+      <div>Väggens hela area: <span class="math">4 · 2,5 = 10 m²</span></div>
+      <div>Fönstrets area: <span class="math">1,2 · 1 = 1,2 m²</span></div>
+      <div>Yta att måla: <span class="math">10 − 1,2 = 8,8 m²</span></div>
+      <div><strong>Svar: 8,8 m²</strong></div>
+      <br>
+      <div class="solution-step"><strong>b) Antal burkar och pris</strong></div>
+      <div>En burk räcker till 6 m². Jag behöver täcka 8,8 m².</div>
+      <div><span class="math">8,8 ÷ 6 ≈ 1,47</span></div>
+      <div>Jag kan inte köpa halva burkar, så jag behöver <strong>2 burkar</strong>.</div>
+      <div>Pris: <span class="math">2 · 149 = 298 kr</span></div>
+      <div><strong>Svar: Anna behöver 2 burkar och det kostar 298 kr.</strong></div>
+    `,
+    checklista: [
+      'Du räknade ut väggens area (bredd · höjd).',
+      'Du drog bort fönstrets area.',
+      'Du visade en uträkning för hur många burkar.',
+      'Du avrundade uppåt (kan inte köpa halva burkar).',
+      'Du skrev svar med enhet (kr, m²).'
+    ]
+  },
+  {
+    id: 'r2',
+    område: 'Procent baklänges',
+    uppgift: `En tröja är nedsatt med <span class="math">25 %</span>. Nu kostar den <span class="math">450 kr</span>.<br><br>
+      <strong>Vad kostade tröjan från början?</strong> Visa hur du tänker.`,
+    exempellösning: `
+      <div class="solution-step"><strong>Så här tänker jag:</strong></div>
+      <div>Priset är sänkt med 25 %. Då är det nya priset 75 % av det gamla (100 % − 25 % = 75 %).</div>
+      <div>Alltså: <span class="math">75 % av gamla priset = 450 kr</span></div>
+      <br>
+      <div class="solution-step"><strong>Räkna ut:</strong></div>
+      <div>Om 75 % = 450 kr, så är 1 % = <span class="math">450 ÷ 75 = 6 kr</span></div>
+      <div>Då är 100 % = <span class="math">6 · 100 = 600 kr</span></div>
+      <br>
+      <div class="solution-step"><strong>Kontroll:</strong></div>
+      <div>25 % av 600 kr = 150 kr rabatt. 600 − 150 = 450 kr. Stämmer!</div>
+      <div><strong>Svar: Tröjan kostade 600 kr från början.</strong></div>
+    `,
+    checklista: [
+      'Du förklarade att nya priset är 75 % av det gamla.',
+      'Du räknade ut vad 1 % är.',
+      'Du räknade ut vad 100 % är.',
+      'Du gjorde en kontroll för att se att svaret stämmer.',
+      'Du skrev svar med enhet (kr).'
+    ]
+  },
+  {
+    id: 'r3',
+    område: 'Algebra + verklig situation',
+    uppgift: `Två mobilabonnemang:<br>
+      <strong>Abonnemang A:</strong> 99 kr/månad, sedan 1 kr per SMS.<br>
+      <strong>Abonnemang B:</strong> 149 kr/månad, alla SMS ingår.<br><br>
+      <strong>Vid hur många SMS per månad kostar abonnemangen lika mycket?</strong> Visa dina uträkningar.`,
+    exempellösning: `
+      <div class="solution-step"><strong>Jag skriver upp priserna som uttryck:</strong></div>
+      <div>Låt x = antal SMS per månad.</div>
+      <div>A kostar: <span class="math">99 + 1 · x = 99 + x</span> kr</div>
+      <div>B kostar: <span class="math">149</span> kr (fast pris)</div>
+      <br>
+      <div class="solution-step"><strong>Jag vill veta när de kostar lika:</strong></div>
+      <div><span class="math">99 + x = 149</span></div>
+      <div><span class="math">x = 149 − 99</span></div>
+      <div><span class="math">x = 50</span></div>
+      <br>
+      <div class="solution-step"><strong>Kontroll:</strong></div>
+      <div>A vid 50 SMS: 99 + 50 = 149 kr. B: 149 kr. Lika!</div>
+      <div><strong>Svar: Vid 50 SMS per månad kostar abonnemangen lika mycket.</strong></div>
+      <div style="margin-top:8px; font-style:italic;">Extra: Skickar du färre än 50 SMS → välj A. Fler än 50 → välj B.</div>
+    `,
+    checklista: [
+      'Du skrev priset som ett uttryck med x.',
+      'Du ställde upp en ekvation där priserna är lika.',
+      'Du löste ekvationen steg för steg.',
+      'Du kontrollerade svaret.',
+      'Du skrev ett svar som går att förstå (med enhet och sammanhang).'
+    ]
+  },
+  {
+    id: 'r4',
+    område: 'Statistik + rimlighet',
+    uppgift: `I en klass med 20 elever är medelåldern <span class="math">15 år</span>.<br>
+      Sedan börjar en ny elev i klassen, som är <span class="math">36 år</span> (en vuxen som läser in grundskolan).<br><br>
+      <strong>Vad är den nya medelåldern?</strong> Visa dina uträkningar.`,
+    exempellösning: `
+      <div class="solution-step"><strong>Först: total ålder i klassen innan.</strong></div>
+      <div>20 elever med medelålder 15 år betyder att alla åldrar tillsammans = <span class="math">20 · 15 = 300 år</span>.</div>
+      <br>
+      <div class="solution-step"><strong>Lägg till den nya eleven:</strong></div>
+      <div>Ny total ålder: <span class="math">300 + 36 = 336 år</span></div>
+      <div>Nytt antal elever: <span class="math">20 + 1 = 21</span></div>
+      <br>
+      <div class="solution-step"><strong>Räkna ut nytt medelvärde:</strong></div>
+      <div><span class="math">336 ÷ 21 = 16 år</span></div>
+      <br>
+      <div class="solution-step"><strong>Rimligt?</strong></div>
+      <div>Ja — medelåldern gick upp från 15 till 16 år. En person som är mycket äldre drar upp medelvärdet, men bara lite eftersom det är 20 andra elever.</div>
+      <div><strong>Svar: Nya medelåldern är 16 år.</strong></div>
+    `,
+    checklista: [
+      'Du räknade ut den totala åldern innan (antal · medelvärde).',
+      'Du lade till den nya elevens ålder.',
+      'Du dividerade med det nya antalet elever.',
+      'Du resonerade om svaret är rimligt.',
+      'Du skrev svar med enhet (år).'
+    ]
+  },
+];
+
+/* ============================================================
+   SVG-FIGURER
+============================================================ */
+function svgRect(b, h, label) {
+  const scale = 14;
+  const w = b * scale;
+  const hh = h * scale;
+  const pad = 30;
+  return `<svg class="fig" width="${w+2*pad}" height="${hh+2*pad}" viewBox="0 0 ${w+2*pad} ${hh+2*pad}">
+    <rect x="${pad}" y="${pad}" width="${w}" height="${hh}" fill="#e8dccf" stroke="#1f1b16" stroke-width="1.5"/>
+    <text x="${pad+w/2}" y="${pad+hh+18}" text-anchor="middle" font-size="13" fill="#6b6359">${b} cm</text>
+    <text x="${pad-8}" y="${pad+hh/2+4}" text-anchor="end" font-size="13" fill="#6b6359">${h} cm</text>
+  </svg>`;
+}
+function svgTriangle(b, h) {
+  const scale = 14;
+  const w = b * scale;
+  const hh = h * scale;
+  const pad = 30;
+  return `<svg class="fig" width="${w+2*pad}" height="${hh+2*pad}" viewBox="0 0 ${w+2*pad} ${hh+2*pad}">
+    <polygon points="${pad},${pad+hh} ${pad+w},${pad+hh} ${pad+w/2},${pad}" fill="#e8dccf" stroke="#1f1b16" stroke-width="1.5"/>
+    <line x1="${pad+w/2}" y1="${pad}" x2="${pad+w/2}" y2="${pad+hh}" stroke="#1f1b16" stroke-dasharray="3,3" stroke-width="1"/>
+    <text x="${pad+w/2}" y="${pad+hh+18}" text-anchor="middle" font-size="13" fill="#6b6359">${b} cm</text>
+    <text x="${pad+w/2+6}" y="${pad+hh/2+4}" font-size="13" fill="#6b6359">${h} cm</text>
+  </svg>`;
+}
+function svgCircle(r) {
+  const scale = 14;
+  const R = r * scale;
+  const pad = 30;
+  const cx = R + pad, cy = R + pad;
+  return `<svg class="fig" width="${2*R+2*pad}" height="${2*R+2*pad}" viewBox="0 0 ${2*R+2*pad} ${2*R+2*pad}">
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="#e8dccf" stroke="#1f1b16" stroke-width="1.5"/>
+    <line x1="${cx}" y1="${cy}" x2="${cx+R}" y2="${cy}" stroke="#1f1b16" stroke-width="1"/>
+    <circle cx="${cx}" cy="${cy}" r="2" fill="#1f1b16"/>
+    <text x="${cx+R/2}" y="${cy-5}" text-anchor="middle" font-size="13" fill="#6b6359">${r} cm</text>
+  </svg>`;
+}
+function svgRightTriangle(a, b) {
+  const scale = 10;
+  const w = b * scale;
+  const hh = a * scale;
+  const pad = 30;
+  return `<svg class="fig" width="${w+2*pad}" height="${hh+2*pad}" viewBox="0 0 ${w+2*pad} ${hh+2*pad}">
+    <polygon points="${pad},${pad+hh} ${pad+w},${pad+hh} ${pad},${pad}" fill="#e8dccf" stroke="#1f1b16" stroke-width="1.5"/>
+    <rect x="${pad}" y="${pad+hh-10}" width="10" height="10" fill="none" stroke="#1f1b16" stroke-width="1"/>
+    <text x="${pad-8}" y="${pad+hh/2+4}" text-anchor="end" font-size="13" fill="#6b6359">${a} cm</text>
+    <text x="${pad+w/2}" y="${pad+hh+18}" text-anchor="middle" font-size="13" fill="#6b6359">${b} cm</text>
+    <text x="${pad+w/2+5}" y="${pad+hh/2-2}" font-size="13" fill="#6b6359">c?</text>
+  </svg>`;
+}
+function svgBarChart(labels, values) {
+  const w = 320, h = 160;
+  const pad = 30;
+  const max = Math.max(...values);
+  const barW = (w - 2*pad) / values.length - 12;
+  return `<svg class="fig" width="${w}" height="${h+30}" viewBox="0 0 ${w} ${h+30}">
+    <line x1="${pad}" y1="${h-10}" x2="${w-pad}" y2="${h-10}" stroke="#1f1b16" stroke-width="1.5"/>
+    <line x1="${pad}" y1="10" x2="${pad}" y2="${h-10}" stroke="#1f1b16" stroke-width="1.5"/>
+    ${values.map((v, i) => {
+      const barH = (v / max) * (h - 40);
+      const x = pad + 10 + i * ((w - 2*pad) / values.length);
+      return `
+        <rect x="${x}" y="${h-10-barH}" width="${barW}" height="${barH}" fill="#8a3a1f"/>
+        <text x="${x+barW/2}" y="${h+5}" text-anchor="middle" font-size="12" fill="#1f1b16">${labels[i]}</text>
+        <text x="${x+barW/2}" y="${h-15-barH}" text-anchor="middle" font-size="11" fill="#6b6359">${v}</text>
+      `;
+    }).join('')}
+  </svg>`;
+}
+
+/* ============================================================
+   APP-LOGIK
+============================================================ */
+const TOPICS = [
+  { id: 'tal', name: 'Tal och procent', desc: 'Bråk, decimaler, procent, negativa tal' },
+  { id: 'algebra', name: 'Algebra och ekvationer', desc: 'Uttryck, lösa ekvationer' },
+  { id: 'geometri', name: 'Geometri', desc: 'Area, omkrets, volym, Pythagoras' },
+  { id: 'samband', name: 'Samband och funktioner', desc: 'Proportionalitet, koordinater' },
+  { id: 'statistik', name: 'Statistik och sannolikhet', desc: 'Medelvärde, median, sannolikhet' },
+  { id: 'problem', name: 'Problemlösning', desc: 'Vardagsproblem i flera steg' },
+];
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Migrera - se till att nya fält finns
+      if (!parsed.resonemangTexts) parsed.resonemangTexts = {};
+      if (!parsed.teacherLog) parsed.teacherLog = [];
+      return parsed;
+    }
+  } catch (e) {}
+  return defaultState();
+}
+function defaultState() {
+  const progress = {};
+  TOPICS.forEach(t => {
+    progress[t.id] = { attempted: 0, correct: 0, mastery: 0 };
+  });
+  return {
+    screen: 'start',
+    diagnosisDone: false,
+    progress,
+    currentTopic: null,
+    currentQ: null,
+    currentStreak: 0,
+    sessionAttempted: 0,
+    sessionCorrect: 0,
+    diagResults: null,
+    finalResults: null,
+    // Sparad text för resonemangsuppgifter (per id)
+    resonemangTexts: {},
+    // Lärarloggbok — anteckningar under testvecka
+    teacherLog: [],
+  };
+}
+function saveState() {
+  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+  catch (e) {}
+}
+function resetAll() {
+  state = defaultState();
+  saveState();
+  render();
+}
+
+function generateQuestion(topicId) {
+  const gens = GENS[topicId];
+  const gen = pick(gens);
+  const q = gen();
+  // Fixa mc-frågor som använder matchCorrect
+  if (q.type === 'mc' && q.correctIndex === -1) {
+    if (q.matchCorrect) {
+      q.correctIndex = q.choices.findIndex(c => c === q.matchCorrect);
+      if (q.correctIndex === -1) {
+        // lägg till om den inte finns
+        q.choices[0] = q.matchCorrect;
+        q.correctIndex = 0;
+      }
+    } else {
+      q.correctIndex = 0;
+    }
+  }
+  return q;
+}
+
+function app() { return document.getElementById('app'); }
+function progLabel() { return document.getElementById('progLabel'); }
+
+function render() {
+  saveState();
+  const screens = {
+    start: renderStart,
+    diagnosis: renderDiagnosis,
+    diagnosisResult: renderDiagnosisResult,
+    topicMenu: renderTopicMenu,
+    practice: renderPractice,
+    topicDone: renderTopicDone,
+    finalTest: renderFinalTest,
+    finalResult: renderFinalResult,
+    strategier: renderStrategier,
+    resonemangList: renderResonemangList,
+    resonemang: renderResonemang,
+    npProv: renderNPProv,
+  };
+  const fn = screens[state.screen] || renderStart;
+  fn();
+}
+
+/* ---- START ---- */
+function renderStart() {
+  progLabel().textContent = 'Välkommen';
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Hej!</h2>
+      <p class="lead">Det här verktyget hjälper dig att klara nationella provet i matematik för åk 9. Du gör det i din egen takt.</p>
+      <p>Så här fungerar det:</p>
+      <div class="diag-intro">
+        <ol>
+          <li>Först gör du en kort <strong>start-koll</strong> på 12 frågor. Den visar vad du redan kan och vad du behöver träna mer på.</li>
+          <li>Sedan tränar du på de områden där du behöver bli bättre. Du får förklaringar efter varje fråga.</li>
+          <li>När du är redo gör du ett <strong>slutprov</strong> för att visa att du klarar allt.</li>
+          <li>I menyn finns också <strong>strategier</strong>, <strong>längre uppgifter med exempellösningar</strong>, och länkar till <strong>riktiga gamla NP-prov</strong> från Skolverket.</li>
+        </ol>
+      </div>
+      <p class="muted">Du kan stänga sidan och fortsätta senare. Verktyget kommer ihåg hur långt du har kommit.</p>
+      <div class="linkrow">
+        <button id="startDiag">Starta start-kollen</button>
+        <button class="ghost" id="skipDiag">Hoppa över och välj område själv</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('startDiag').onclick = startDiagnosis;
+  document.getElementById('skipDiag').onclick = () => {
+    state.screen = 'topicMenu';
+    state.diagnosisDone = true;
+    render();
+  };
+}
+
+/* ---- DIAGNOS ---- */
+function startDiagnosis() {
+  // 2 frågor per område = 12 frågor
+  const qs = [];
+  TOPICS.forEach(t => {
+    qs.push({ topic: t.id, q: generateQuestion(t.id) });
+    qs.push({ topic: t.id, q: generateQuestion(t.id) });
+  });
+  state.diag = {
+    questions: shuffle(qs),
+    index: 0,
+    answers: [],
+  };
+  state.screen = 'diagnosis';
+  render();
+}
+
+function renderDiagnosis() {
+  const d = state.diag;
+  const q = d.questions[d.index].q;
+  const topic = d.questions[d.index].topic;
+  progLabel().textContent = `Start-koll: ${d.index + 1} / ${d.questions.length}`;
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="margin-bottom:4px;">Fråga ${d.index + 1} av ${d.questions.length}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${q.figure || ''}
+      ${renderQuestionInput(q)}
+      <div id="fb"></div>
+      <div class="row end" style="margin-top:18px;">
+        <button id="submitBtn">Svara</button>
+      </div>
+    </div>
+  `;
+  wireQuestion(q, (correct) => {
+    d.answers.push({ topic, correct });
+    document.getElementById('submitBtn').textContent = 'Nästa';
+    document.getElementById('submitBtn').onclick = () => {
+      d.index++;
+      if (d.index >= d.questions.length) finishDiagnosis();
+      else render();
+    };
+  });
+}
+
+function finishDiagnosis() {
+  const d = state.diag;
+  const byTopic = {};
+  TOPICS.forEach(t => byTopic[t.id] = { correct: 0, total: 0 });
+  d.answers.forEach(a => {
+    byTopic[a.topic].total++;
+    if (a.correct) byTopic[a.topic].correct++;
+  });
+  state.diagResults = byTopic;
+  state.diagnosisDone = true;
+  // uppdatera initial mastery lätt
+  TOPICS.forEach(t => {
+    const r = byTopic[t.id];
+    state.progress[t.id].mastery = r.correct * 10; // max 20 från diagnos
+  });
+  state.screen = 'diagnosisResult';
+  render();
+}
+
+function renderDiagnosisResult() {
+  progLabel().textContent = 'Start-kollen klar';
+  const results = state.diagResults;
+  const sorted = [...TOPICS].sort((a, b) => {
+    const ra = results[a.id], rb = results[b.id];
+    return (ra.correct/ra.total) - (rb.correct/rb.total);
+  });
+  const weakest = sorted[0];
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Bra jobbat, start-kollen är klar!</h2>
+      <p class="lead">Här är vad du redan kan och vad som är nästa steg.</p>
+      ${TOPICS.map(t => {
+        const r = results[t.id];
+        const pct = Math.round(r.correct/r.total*100);
+        return `
+          <div style="margin:12px 0; padding-bottom:12px; border-bottom:1px solid var(--line);">
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <strong>${t.name}</strong>
+              <span class="muted" style="font-variant-numeric:tabular-nums;">${r.correct}/${r.total} rätt</span>
+            </div>
+            <div class="bar" style="margin-top:6px; height:4px; background:var(--line); border-radius:2px; overflow:hidden;">
+              <span style="display:block; height:100%; width:${pct}%; background:${pct>=50?'var(--good)':'var(--accent)'};"></span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+      <p style="margin-top:20px;">Mitt förslag: börja med <strong>${weakest.name}</strong>. Där kan du vinna mest.</p>
+      <div class="linkrow">
+        <button id="goWeakest">Börja med ${weakest.name}</button>
+        <button class="ghost" id="goMenu">Välj själv</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('goWeakest').onclick = () => {
+    startPractice(weakest.id);
+  };
+  document.getElementById('goMenu').onclick = () => {
+    state.screen = 'topicMenu';
+    render();
+  };
+}
+
+/* ---- TOPIC MENU ---- */
+function renderTopicMenu() {
+  progLabel().textContent = 'Välj område';
+  const allMastered = TOPICS.every(t => state.progress[t.id].mastery >= 80);
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Vad vill du träna på?</h2>
+      <p class="lead">Välj ett område. Den gröna stapeln visar hur bra du kan det.</p>
+      <div class="topic-grid">
+        ${TOPICS.map(t => {
+          const p = state.progress[t.id];
+          return `
+            <button class="topic-btn" data-id="${t.id}">
+              <span class="name">${t.name}</span>
+              <span class="meta">${t.desc}</span>
+              <span class="bar"><span style="width:${Math.min(100, p.mastery)}%"></span></span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+      ${allMastered ? `
+        <div style="margin-top:24px; padding:16px; background:var(--good-soft); border-left:3px solid var(--good); border-radius:4px;">
+          <strong>Du är redo för slutprovet.</strong>
+          <p style="margin:6px 0 10px;">Du har tränat alla områden. Dags att prova ett riktigt prov på 15 frågor.</p>
+          <button id="goFinal">Starta slutprovet</button>
+        </div>
+      ` : `
+        <div style="margin-top:24px;">
+          <button class="ghost" id="goFinalEarly">Jag vill testa slutprovet ändå</button>
+        </div>
+      `}
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Extra träning för högre betyg</h3>
+      <p class="muted" style="font-size:15px;">På NP behöver du också kunna förklara hur du tänker. Här lär du dig det.</p>
+      <div class="topic-grid" style="margin-top:14px;">
+        <button class="topic-btn" id="goStrategier">
+          <span class="name">Strategier och tips</span>
+          <span class="meta">Så löser du problem och skriver bra svar</span>
+        </button>
+        <button class="topic-btn" id="goResonemang">
+          <span class="name">Skriv din lösning</span>
+          <span class="meta">Större uppgifter där du förklarar steg för steg</span>
+        </button>
+      </div>
+      <button class="topic-btn" id="goNP" style="margin-top:10px; width:100%;">
+        <span class="name">Riktiga gamla NP-prov</span>
+        <span class="meta">Träna på prov från tidigare år (från Skolverket)</span>
+      </button>
+    </div>
+  `;
+  document.querySelectorAll('.topic-btn[data-id]').forEach(btn => {
+    btn.onclick = () => startPractice(btn.dataset.id);
+  });
+  const goFinal = document.getElementById('goFinal');
+  if (goFinal) goFinal.onclick = startFinalTest;
+  const goFinalEarly = document.getElementById('goFinalEarly');
+  if (goFinalEarly) goFinalEarly.onclick = startFinalTest;
+  document.getElementById('goStrategier').onclick = () => { state.screen = 'strategier'; render(); };
+  document.getElementById('goResonemang').onclick = () => { state.screen = 'resonemangList'; render(); };
+  document.getElementById('goNP').onclick = () => { state.screen = 'npProv'; render(); };
+}
+
+/* ---- PRACTICE ---- */
+function startPractice(topicId) {
+  state.currentTopic = topicId;
+  state.currentStreak = 0;
+  state.sessionAttempted = 0;
+  state.sessionCorrect = 0;
+  nextPracticeQuestion();
+}
+function nextPracticeQuestion() {
+  state.currentQ = generateQuestion(state.currentTopic);
+  state.screen = 'practice';
+  render();
+}
+
+function renderPractice() {
+  const topic = TOPICS.find(t => t.id === state.currentTopic);
+  const p = state.progress[state.currentTopic];
+  progLabel().textContent = `${topic.name}`;
+  const q = state.currentQ;
+  app().innerHTML = `
+    <div class="card fade">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+        <div class="muted">${topic.name} – träning</div>
+        <div class="muted" style="font-variant-numeric:tabular-nums;">
+          Rätt: ${state.sessionCorrect}/${state.sessionAttempted}
+        </div>
+      </div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${q.figure || ''}
+      ${renderQuestionInput(q)}
+      <div id="fb"></div>
+      <div class="row" style="margin-top:18px;">
+        <button class="ghost small" id="hintBtn">Visa ledtråd</button>
+        <div class="spacer"></div>
+        <button class="ghost small" id="quitBtn">Byt område</button>
+        <button id="submitBtn">Svara</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <strong>Din koll på området</strong>
+        <span class="muted">${Math.min(100, p.mastery)} / 100</span>
+      </div>
+      <div class="bar" style="margin-top:8px; height:6px; background:var(--line); border-radius:3px; overflow:hidden;">
+        <span style="display:block; height:100%; width:${Math.min(100, p.mastery)}%; background:var(--good); transition:width 0.4s ease;"></span>
+      </div>
+      <div class="muted" style="margin-top:10px; font-size:14px;">
+        När stapeln når ${state.diagnosisDone ? '80' : '100'} är du säker på området. Fortsätt tills dess!
+      </div>
+    </div>
+  `;
+  document.getElementById('hintBtn').onclick = () => {
+    const hint = q.steps[0];
+    document.getElementById('hintBtn').outerHTML = `<div class="hint-box"><strong>Ledtråd:</strong> ${hint}</div>`;
+  };
+  document.getElementById('quitBtn').onclick = () => {
+    state.screen = 'topicMenu';
+    render();
+  };
+
+  wireQuestion(q, (correct) => {
+    state.sessionAttempted++;
+    const pr = state.progress[state.currentTopic];
+    pr.attempted++;
+    if (correct) {
+      state.sessionCorrect++;
+      state.currentStreak++;
+      pr.correct++;
+      pr.mastery = Math.min(100, pr.mastery + 8);
+    } else {
+      state.currentStreak = 0;
+      pr.mastery = Math.max(0, pr.mastery - 3);
+    }
+    saveState();
+    document.getElementById('submitBtn').textContent = 'Nästa fråga';
+    document.getElementById('submitBtn').onclick = () => {
+      // Auto-slutsats om masteri hög
+      if (pr.mastery >= 80 && state.sessionAttempted >= 5) {
+        state.screen = 'topicDone';
+        render();
+      } else {
+        nextPracticeQuestion();
+      }
+    };
+  });
+}
+
+function renderTopicDone() {
+  const topic = TOPICS.find(t => t.id === state.currentTopic);
+  progLabel().textContent = 'Bra jobbat!';
+  app().innerHTML = `
+    <div class="card fade" style="text-align:center;">
+      <h2>Du har koll på ${topic.name}.</h2>
+      <p class="lead">Du svarade rätt på ${state.sessionCorrect} av ${state.sessionAttempted} frågor och byggde upp ett bra flyt.</p>
+      <div class="result-big">${Math.round(state.sessionCorrect/state.sessionAttempted*100)} %</div>
+      <div class="result-label">den här sessionen</div>
+      <div class="linkrow" style="justify-content:center; margin-top:24px;">
+        <button id="backToMenu">Välj nästa område</button>
+        <button class="ghost" id="keepTraining">Fortsätt träna ändå</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('backToMenu').onclick = () => {
+    state.screen = 'topicMenu';
+    render();
+  };
+  document.getElementById('keepTraining').onclick = () => {
+    nextPracticeQuestion();
+  };
+}
+
+/* ---- FINAL TEST ---- */
+function startFinalTest() {
+  const qs = [];
+  // 2-3 från varje område, totalt 15
+  const dist = { tal: 3, algebra: 3, geometri: 3, samband: 2, statistik: 2, problem: 2 };
+  Object.entries(dist).forEach(([topic, n]) => {
+    for (let i = 0; i < n; i++) qs.push({ topic, q: generateQuestion(topic) });
+  });
+  state.final = {
+    questions: shuffle(qs),
+    index: 0,
+    answers: [],
+  };
+  state.screen = 'finalTest';
+  render();
+}
+
+function renderFinalTest() {
+  const f = state.final;
+  const q = f.questions[f.index].q;
+  progLabel().textContent = `Slutprov: ${f.index + 1} / ${f.questions.length}`;
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="margin-bottom:4px;">Fråga ${f.index + 1} av ${f.questions.length}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${q.figure || ''}
+      ${renderQuestionInput(q)}
+      <div id="fb"></div>
+      <div class="row end" style="margin-top:18px;">
+        <button id="submitBtn">Svara</button>
+      </div>
+      <div class="dots" style="justify-content:center; margin-top:20px;">
+        ${f.questions.map((_, i) => `<div class="dot ${i <= f.index ? 'on' : ''}"></div>`).join('')}
+      </div>
+    </div>
+  `;
+  wireQuestion(q, (correct) => {
+    f.answers.push({ topic: f.questions[f.index].topic, correct });
+    document.getElementById('submitBtn').textContent = f.index + 1 >= f.questions.length ? 'Se resultat' : 'Nästa fråga';
+    document.getElementById('submitBtn').onclick = () => {
+      f.index++;
+      if (f.index >= f.questions.length) finishFinalTest();
+      else render();
+    };
+  });
+}
+
+function finishFinalTest() {
+  const f = state.final;
+  const correct = f.answers.filter(a => a.correct).length;
+  const total = f.answers.length;
+  const pct = Math.round(correct/total*100);
+  const byTopic = {};
+  TOPICS.forEach(t => byTopic[t.id] = { correct: 0, total: 0 });
+  f.answers.forEach(a => {
+    byTopic[a.topic].total++;
+    if (a.correct) byTopic[a.topic].correct++;
+  });
+  state.finalResults = { correct, total, pct, byTopic };
+  state.screen = 'finalResult';
+  render();
+}
+
+function renderFinalResult() {
+  progLabel().textContent = 'Slutprov klart';
+  const r = state.finalResults;
+  const godkänt = r.pct >= 60;
+  const weakest = [...TOPICS].sort((a, b) => {
+    const ra = r.byTopic[a.id], rb = r.byTopic[b.id];
+    if (ra.total === 0) return 1;
+    if (rb.total === 0) return -1;
+    return (ra.correct/ra.total) - (rb.correct/rb.total);
+  })[0];
+  app().innerHTML = `
+    <div class="card fade" style="text-align:center;">
+      <h2>${godkänt ? 'Du är på god väg till godkänt!' : 'Bra försök – fortsätt träna.'}</h2>
+      <div class="result-big">${r.correct} / ${r.total}</div>
+      <div class="result-label">${r.pct} % rätt</div>
+      <p style="margin-top:18px;">${godkänt
+        ? 'Du klarar de flesta delar. Håll formen uppe genom att träna någon gång till innan provet.'
+        : 'Du har flera områden som du fortfarande kan växa i. Fortsätt med träningen – särskilt på det som är svårast just nu.'}</p>
+    </div>
+    <div class="card">
+      <h3>Så gick det per område</h3>
+      ${TOPICS.map(t => {
+        const br = r.byTopic[t.id];
+        const pct = br.total === 0 ? 0 : Math.round(br.correct/br.total*100);
+        return `
+          <div style="margin:12px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <strong>${t.name}</strong>
+              <span class="muted" style="font-variant-numeric:tabular-nums;">${br.correct}/${br.total}</span>
+            </div>
+            <div class="bar" style="margin-top:6px; height:4px; background:var(--line); border-radius:2px; overflow:hidden;">
+              <span style="display:block; height:100%; width:${pct}%; background:${pct>=60?'var(--good)':'var(--accent)'};"></span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+      <p style="margin-top:20px;">Näst bästa steg: träna mer på <strong>${weakest.name}</strong>.</p>
+      <div class="linkrow">
+        <button id="trainWeak">Träna ${weakest.name}</button>
+        <button class="ghost" id="toMenu">Till meny</button>
+        <button class="ghost" id="retry">Gör om slutprovet</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('trainWeak').onclick = () => startPractice(weakest.id);
+  document.getElementById('toMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+  document.getElementById('retry').onclick = startFinalTest;
+}
+
+/* ---- STRATEGIER ---- */
+function renderStrategier() {
+  progLabel().textContent = 'Strategier och tips';
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Så löser du problem på NP</h2>
+      <p class="lead">Här är de knep som hjälper dig mest. Läs igenom och kom tillbaka när du behöver.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">När du läser en textuppgift</h3>
+
+      <div class="strategy-card">
+        <h4>1. Läs hela uppgiften först</h4>
+        <p>Läs igenom uppgiften en gång utan att räkna. Få en känsla för vad den handlar om.</p>
+        <div class="example">Tänk: "Vad handlar det här om? Pengar? Yta? Tid?"</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>2. Stryk under det viktiga</h4>
+        <p>Läs igen och stryk under siffror och frågor. Stryk gärna under med penna.</p>
+        <div class="example">"Anna köper <u>3 tröjor</u> som kostar <u>250 kr styck</u>. Hur mycket betalar hon <u>totalt</u>?"</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>3. Vad söker du?</h4>
+        <p>Skriv ner vad frågan vill att du räknar ut. Det hjälper dig att inte tappa bort dig.</p>
+        <div class="example">"Söker: total kostnad i kr."</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>4. Rita en bild om det går</h4>
+        <p>Särskilt vid geometri eller när något delas upp. En bild gör uppgiften tydligare.</p>
+        <div class="example">Vid en vägg som ska målas: rita en rektangel och markera fönstren.</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>5. Räkna steg för steg</h4>
+        <p>Dela upp i små steg. Skriv ner varje steg så du (och rättaren) ser vad du gör.</p>
+      </div>
+
+      <div class="strategy-card">
+        <h4>6. Kontrollera svaret</h4>
+        <p>Är svaret rimligt? Om en tröja ska kosta 4 000 kr är något fel. Räkna baklänges om du kan.</p>
+        <div class="example">Svar: 600 kr. Kontroll: 25 % av 600 = 150. 600 − 150 = 450. Stämmer!</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Så skriver du en bra lösning</h3>
+      <p>På NP räcker det inte alltid att skriva "42" som svar. Du behöver visa hur du tänkte. Här är mönstret:</p>
+
+      <div class="strategy-card">
+        <h4>Steg 1: Skriv vad du vet</h4>
+        <p>Skriv ner de tal som uppgiften ger dig.</p>
+        <div class="example">"Väggen är 4 m bred och 2,5 m hög."</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Steg 2: Skriv vad du gör och varför</h4>
+        <p>Använd korta meningar: "Jag räknar ut arean med bas · höjd."</p>
+        <div class="example">"För att få arean tar jag 4 · 2,5 = 10 m²."</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Steg 3: Visa uträkningarna</h4>
+        <p>Skriv ner talen du räknar med. Inte bara svaret. Rättaren vill se att du förstår.</p>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Steg 4: Skriv svar med enhet</h4>
+        <p>"Svar: 8,8 m²" är bättre än bara "8,8". Enheten är viktig.</p>
+        <div class="example">Glöm inte: kr, m², cm³, °, timmar, elever osv.</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Steg 5: Svara på det som frågas</h4>
+        <p>Läs frågan igen innan du lämnar in. Frågade de efter pris eller antal? År eller månader?</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Vanliga fallgropar</h3>
+
+      <div class="strategy-card">
+        <h4>Räknefel med decimaler</h4>
+        <p>Dubbelkolla kommatecknet. 0,5 och 5 är inte samma sak!</p>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Glömda enheter</h4>
+        <p>Om uppgiften ger meter och frågar efter centimeter — byt enhet!</p>
+        <div class="example">1 m = 100 cm. 1 km = 1000 m. 1 timme = 60 minuter.</div>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Avrundning åt fel håll</h4>
+        <p>Behöver du 1,47 burkar färg? Då måste du köpa 2, inte 1. Du kan inte köpa halva burkar.</p>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Procent av fel tal</h4>
+        <p>"25 % rabatt på 400 kr" — procenten räknas på 400, inte på det nya priset. Tänk efter vilken helhet 100 % syftar på.</p>
+      </div>
+
+      <div class="strategy-card">
+        <h4>Svara på fel fråga</h4>
+        <p>Du räknade fram x men frågan vill ha totalsumman. Läs om frågan innan du lämnar in!</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">På själva provet</h3>
+      <div class="strategy-card">
+        <h4>Ta det lugnt i början</h4>
+        <p>Börja med de uppgifter som ser enkla ut. De bygger upp ditt självförtroende.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Hoppa över och återkom</h4>
+        <p>Fastnar du? Hoppa över och gör andra uppgifter först. Kom tillbaka senare.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Lämna aldrig blankt</h4>
+        <p>Skriv något om du har en aning. En halv lösning kan ge poäng. Blankt ger alltid noll.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Kontrollera i slutet</h4>
+        <p>När du är klar — gå tillbaka och läs dina svar en gång till. Fånga dumma fel.</p>
+      </div>
+    </div>
+
+    <div class="linkrow">
+      <button id="backMenu">Tillbaka till meny</button>
+    </div>
+  `;
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+/* ---- RESONEMANG LIST ---- */
+function renderResonemangList() {
+  progLabel().textContent = 'Skriv din lösning';
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Skriv din lösning</h2>
+      <p class="lead">Här får du större uppgifter där du ska förklara hur du tänker, inte bara skriva ett svar. Det är så man får poäng på NP.</p>
+      <p><strong>Så här gör du:</strong></p>
+      <ol style="padding-left:22px;">
+        <li>Läs uppgiften noga.</li>
+        <li>Skriv din lösning i textrutan. Visa dina steg.</li>
+        <li>Jämför med exempellösningen.</li>
+        <li>Bocka av det du gjorde bra i checklistan.</li>
+      </ol>
+      <p class="muted" style="font-size:14px; margin-top:14px;">Tips: Läs gärna <em>Strategier och tips</em> först om du inte gjort det.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Välj uppgift</h3>
+      ${RESONEMANG.map((r, i) => `
+        <button class="topic-btn" data-idx="${i}" style="margin:10px 0; width:100%;">
+          <span class="name">Uppgift ${i+1}: ${r.område}</span>
+          <span class="meta">${r.uppgift.substring(0, 90).replace(/<[^>]+>/g, '')}...</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka till meny</button>
+    </div>
+  `;
+  document.querySelectorAll('.topic-btn[data-idx]').forEach(btn => {
+    btn.onclick = () => {
+      state.currentResonemang = parseInt(btn.dataset.idx);
+      state.resonemangShowSolution = false;
+      state.screen = 'resonemang';
+      render();
+    };
+  });
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+/* ---- RESONEMANG (enskild uppgift) ---- */
+function renderResonemang() {
+  const r = RESONEMANG[state.currentResonemang];
+  progLabel().textContent = `Uppgift ${state.currentResonemang + 1}`;
+  const showing = state.resonemangShowSolution;
+  const saved = state.resonemangTexts[r.id] || '';
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="margin-bottom:6px;">${r.område}</div>
+      <div class="q-prompt" style="font-size:18px;">${r.uppgift}</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Din lösning</h3>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">Skriv hur du tänker. Visa stegen. Glöm inte enhet i svaret. <em>Din text sparas automatiskt.</em></p>
+      <textarea class="solution" id="solution" placeholder="Börja med att skriva ner vad du vet från uppgiften...&#10;&#10;Sedan: vilka steg tar du?&#10;&#10;Avsluta med: Svar: ...">${escapeHtml(saved)}</textarea>
+      <div class="row" style="margin-top:14px;">
+        <span class="muted" style="font-size:13px;" id="saveStatus">${saved ? 'Senast sparad' : ''}</span>
+        <div class="spacer"></div>
+        <button class="ghost small" id="clearSol">Rensa text</button>
+        ${showing ? `
+          <button class="ghost" id="hideSol">Dölj exempellösning</button>
+        ` : `
+          <button id="showSol">Visa exempellösning</button>
+        `}
+      </div>
+    </div>
+
+    ${showing ? `
+      <div class="card">
+        <h3 style="margin-top:0;">Exempel på en bra lösning</h3>
+        <p class="muted" style="font-size:14px;">Det finns inte bara en rätt lösning — men så här kan en elev som når E skriva:</p>
+        <div class="solution-box">
+          ${r.exempellösning}
+        </div>
+
+        <div class="checklist">
+          <h4>Bocka av det du hade med i din lösning</h4>
+          ${r.checklista.map((item, i) => `
+            <label>
+              <input type="checkbox" id="check-${i}">
+              <span>${item}</span>
+            </label>
+          `).join('')}
+        </div>
+
+        <p class="muted" style="margin-top:14px; font-size:14px;">Det är okej om du missade något. Gå tillbaka och försök igen när du vill — du blir bättre varje gång.</p>
+      </div>
+    ` : ''}
+
+    <div class="linkrow">
+      <button class="ghost" id="backList">Tillbaka till uppgiftsval</button>
+      <button class="ghost" id="backMenu">Till huvudmeny</button>
+      ${state.currentResonemang < RESONEMANG.length - 1 ? `
+        <button class="ghost" id="nextRes">Nästa uppgift</button>
+      ` : ''}
+    </div>
+  `;
+
+  // Autosave
+  const ta = document.getElementById('solution');
+  const status = document.getElementById('saveStatus');
+  let saveTimer;
+  ta.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    status.textContent = 'Skriver...';
+    saveTimer = setTimeout(() => {
+      state.resonemangTexts[r.id] = ta.value;
+      saveState();
+      status.textContent = 'Sparad';
+      setTimeout(() => { if (status.textContent === 'Sparad') status.textContent = ''; }, 2000);
+    }, 400);
+  });
+
+  document.getElementById('clearSol').onclick = () => {
+    if (confirm('Rensa din text? Den går inte att få tillbaka.')) {
+      ta.value = '';
+      state.resonemangTexts[r.id] = '';
+      saveState();
+      status.textContent = '';
+    }
+  };
+
+  const showBtn = document.getElementById('showSol');
+  if (showBtn) showBtn.onclick = () => {
+    state.resonemangShowSolution = true;
+    render();
+  };
+  const hideBtn = document.getElementById('hideSol');
+  if (hideBtn) hideBtn.onclick = () => {
+    state.resonemangShowSolution = false;
+    render();
+  };
+  document.getElementById('backList').onclick = () => { state.screen = 'resonemangList'; render(); };
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+  const nextBtn = document.getElementById('nextRes');
+  if (nextBtn) nextBtn.onclick = () => {
+    state.currentResonemang++;
+    state.resonemangShowSolution = false;
+    render();
+  };
+}
+
+// Hjälpfunktion för att säkra textarea-innehåll
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* ---- NP-PROV (länkar) ---- */
+function renderNPProv() {
+  progLabel().textContent = 'Gamla nationella prov';
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Riktiga gamla prov</h2>
+      <p class="lead">När grunderna sitter är det bästa du kan göra att träna på riktiga prov från tidigare år. Där ser du hur frågorna ser ut på riktigt.</p>
+      <p><strong>Så här gör du:</strong></p>
+      <ol style="padding-left:22px;">
+        <li>Klicka på en länk nedan för att ladda ner ett prov.</li>
+        <li>Skriv ut eller öppna på datorn/telefonen.</li>
+        <li>Sätt dig i lugn och ro och försök göra provet.</li>
+        <li>Jämför med facit (bedömningsanvisningarna).</li>
+      </ol>
+      <p class="muted" style="font-size:14px;">Proven är helt gratis och kommer från Skolverket.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Prov du kan ladda ner</h3>
+
+      <a class="ext-link" href="https://www.su.se/enheter/prim-gruppen/nationella-prov/arskurs-9" target="_blank" rel="noopener">
+        <span class="lname">PRIM-gruppen – årskurs 9</span>
+        <span class="ldesc">Här finns hela prov från 2013, 2014, 2018 och 2019 med alla delprov (A, B, C, D) och bedömningsanvisningar (facit).</span>
+        <span class="lurl">su.se/enheter/prim-gruppen/nationella-prov/arskurs-9</span>
+      </a>
+
+      <a class="ext-link" href="https://www.skolverket.se/prov-och-bedomning/nationella-prov/bestall-nationella-prov/gamla-nationella-prov" target="_blank" rel="noopener">
+        <span class="lname">Skolverket – gamla nationella prov</span>
+        <span class="ldesc">Skolverkets egen samling av gamla prov i olika ämnen. Matematik årskurs 9 finns som zip-fil.</span>
+        <span class="lurl">skolverket.se/prov-och-bedomning/nationella-prov</span>
+      </a>
+
+      <a class="ext-link" href="https://www.skolverket.se/download/18.7d8abad51829e496cad3e94/1695739541987/formelblad-matematik-ak9.pdf" target="_blank" rel="noopener">
+        <span class="lname">Formelblad för årskurs 9</span>
+        <span class="ldesc">Det formelblad du får använda på provet. Lär dig vilka formler som finns med — så slipper du lära dig dem utantill.</span>
+        <span class="lurl">skolverket.se (pdf)</span>
+      </a>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Bra att veta om provet</h3>
+      <p>Nationella provet i matematik består av <strong>fyra delprov</strong>:</p>
+      <div class="strategy-card">
+        <h4>Delprov A – muntligt</h4>
+        <p>Du pratar om matte i en liten grupp. Ingen räknare, inget formelblad.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Delprov B – kortsvar</h4>
+        <p>Kortsvars- och flervalsfrågor. Inga räknare, inget formelblad.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Delprov C – problemlösning</h4>
+        <p>En större uppgift där du ska förklara hur du tänker och visa alla steg. Räknare och formelblad är tillåtet.</p>
+      </div>
+      <div class="strategy-card">
+        <h4>Delprov D – blandade uppgifter</h4>
+        <p>Varierande frågor. Räknare och formelblad är tillåtet.</p>
+      </div>
+      <p style="margin-top:14px;"><strong>Viktigt:</strong> Rättaren vill ge dig poäng för det du kan — inte dra bort poäng för det du inte kan. Så skriv alltid något, även om du är osäker.</p>
+    </div>
+
+    <div class="linkrow">
+      <button id="backMenu">Tillbaka till meny</button>
+    </div>
+  `;
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+/* ============================================================
+   FRÅGE-UI
+============================================================ */
+function renderQuestionInput(q) {
+  if (q.type === 'mc') {
+    return `
+      <div class="choices">
+        ${q.choices.map((c, i) => `
+          <button class="choice" data-idx="${i}">${c}</button>
+        `).join('')}
+      </div>
+      <input type="hidden" id="mcPicked" value="-1">
+    `;
+  } else {
+    return `
+      <div class="row">
+        <input class="answer" id="ansInput" type="text" inputmode="decimal" placeholder="Ditt svar" autocomplete="off" />
+      </div>
+      <div class="muted" style="margin-top:8px; font-size:13px;">Tips: skriv decimaltal med komma, t.ex. 3,5.</div>
+    `;
+  }
+}
+
+function wireQuestion(q, onAnswered) {
+  const submitBtn = document.getElementById('submitBtn');
+  let answered = false;
+
+  if (q.type === 'mc') {
+    const btns = document.querySelectorAll('.choice');
+    let picked = -1;
+    btns.forEach(btn => {
+      btn.onclick = () => {
+        if (answered) return;
+        btns.forEach(b => b.style.borderColor = '');
+        btn.style.borderColor = 'var(--ink)';
+        btn.style.background = 'var(--accent-soft)';
+        picked = parseInt(btn.dataset.idx);
+        document.getElementById('mcPicked').value = picked;
+      };
+    });
+    submitBtn.onclick = () => {
+      if (answered) return;
+      if (picked === -1) {
+        submitBtn.textContent = 'Välj ett svar först';
+        setTimeout(() => { if (!answered) submitBtn.textContent = 'Svara'; }, 1200);
+        return;
+      }
+      answered = true;
+      const correct = picked === q.correctIndex;
+      btns.forEach((b, i) => {
+        b.disabled = true;
+        b.style.background = '';
+        b.style.borderColor = '';
+        if (i === picked && correct) b.classList.add('picked-correct');
+        else if (i === picked && !correct) b.classList.add('picked-wrong');
+        else if (i === q.correctIndex) b.classList.add('reveal-correct');
+      });
+      showFeedback(q, correct);
+      onAnswered(correct);
+    };
+  } else {
+    const input = document.getElementById('ansInput');
+    input.focus();
+    input.onkeydown = e => {
+      if (e.key === 'Enter' && !answered) submitBtn.click();
+    };
+    submitBtn.onclick = () => {
+      if (answered) return;
+      const v = parseAnswer(input.value);
+      if (isNaN(v)) {
+        submitBtn.textContent = 'Skriv ett svar';
+        setTimeout(() => { if (!answered) submitBtn.textContent = 'Svara'; }, 1200);
+        return;
+      }
+      answered = true;
+      const tol = q.tolerance || 0.01;
+      const correct = Math.abs(v - q.answer) <= tol;
+      input.disabled = true;
+      if (correct) {
+        input.style.borderColor = 'var(--good)';
+        input.style.background = 'var(--good-soft)';
+      } else {
+        input.style.borderColor = 'var(--bad)';
+        input.style.background = 'var(--bad-soft)';
+      }
+      showFeedback(q, correct);
+      onAnswered(correct);
+    };
+  }
+}
+
+function showFeedback(q, correct) {
+  const fb = document.getElementById('fb');
+  const correctText = q.type === 'mc' ? q.choices[q.correctIndex] : fmtNum(q.answer);
+  if (correct) {
+    fb.innerHTML = `
+      <div class="feedback good">
+        <span class="tag">Rätt svar</span>
+        Bra jobbat. Så här kan man tänka:
+        <div class="steps">
+          ${q.steps.map(s => `<div>${s}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  } else {
+    fb.innerHTML = `
+      <div class="feedback bad">
+        <span class="tag">Inte riktigt</span>
+        Rätt svar är <strong>${correctText}</strong>. Så här kan man tänka steg för steg:
+        <div class="steps">
+          ${q.steps.map(s => `<div>${s}</div>`).join('')}
+        </div>
+        Ta det lugnt, du får nästa fråga strax och får öva mer.
+      </div>
+    `;
+  }
+}
+
+/* ============================================================
+   LÄRARLOGGBOK
+   Aktiveras via URL (?larare=1) eller tangenter (Shift+L tre gånger)
+============================================================ */
+function isTeacherMode() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('larare') === '1' || localStorage.getItem('np_teacher_mode') === '1';
+}
+
+function getCurrentContext() {
+  const screen = state.screen;
+  if (screen === 'practice' && state.currentTopic) {
+    const topic = TOPICS.find(t => t.id === state.currentTopic);
+    return `Tränar: ${topic ? topic.name : state.currentTopic}`;
+  }
+  if (screen === 'resonemang' && state.currentResonemang != null) {
+    const r = RESONEMANG[state.currentResonemang];
+    return `Resonemangsuppgift: ${r ? r.område : ''}`;
+  }
+  if (screen === 'diagnosis') return 'Start-kollen';
+  if (screen === 'finalTest') return 'Slutprovet';
+  if (screen === 'strategier') return 'Strategier';
+  if (screen === 'npProv') return 'NP-prov (länkar)';
+  if (screen === 'topicMenu') return 'Huvudmeny';
+  if (screen === 'start') return 'Startsidan';
+  return screen;
+}
+
+function renderLogEntries() {
+  const entries = document.getElementById('logEntries');
+  if (!entries) return;
+  if (state.teacherLog.length === 0) {
+    entries.innerHTML = '<div style="color:#a39482; font-style:italic; padding:8px 0;">Inga anteckningar än.</div>';
+    return;
+  }
+  entries.innerHTML = [...state.teacherLog].reverse().map(e => `
+    <div class="entry">
+      <div class="when">${e.when}</div>
+      <div class="ctx">${e.context}</div>
+      <div>${escapeHtml(e.text)}</div>
+    </div>
+  `).join('');
+}
+
+function saveLogEntry() {
+  const input = document.getElementById('logInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const now = new Date();
+  const when = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  state.teacherLog.push({
+    when,
+    context: getCurrentContext(),
+    text,
+  });
+  saveState();
+  input.value = '';
+  renderLogEntries();
+}
+
+function exportLog() {
+  if (state.teacherLog.length === 0) {
+    alert('Inga anteckningar att exportera än.');
+    return;
+  }
+  const text = [
+    `LÄRARLOGGBOK – NP-matteverktyget`,
+    `Exporterad: ${new Date().toLocaleString('sv-SE')}`,
+    `Version: ${VERSION}`,
+    `Antal anteckningar: ${state.teacherLog.length}`,
+    ``,
+    `====================`,
+    ``,
+    ...state.teacherLog.map(e => `[${e.when}] ${e.context}\n${e.text}\n`),
+  ].join('\n');
+  // Skapa en nedladdningslänk
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lararlogg-${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function initTeacherMode() {
+  if (!isTeacherMode()) return;
+  // Spara flaggan så den överlever omladdningar
+  localStorage.setItem('np_teacher_mode', '1');
+  const toggle = document.getElementById('logToggle');
+  const log = document.getElementById('teacherLog');
+  toggle.style.display = 'block';
+  toggle.onclick = () => {
+    const visible = log.style.display !== 'none';
+    log.style.display = visible ? 'none' : 'block';
+    if (!visible) {
+      renderLogEntries();
+      document.getElementById('logInput').focus();
+    }
+  };
+  document.getElementById('logSave').onclick = saveLogEntry;
+  document.getElementById('logExport').onclick = exportLog;
+  document.getElementById('logClose').onclick = () => { log.style.display = 'none'; };
+  // Ctrl+Enter i textarean sparar direkt
+  document.getElementById('logInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      saveLogEntry();
+    }
+  });
+}
+
+/* ============================================================
+   START
+============================================================ */
+document.getElementById('resetBtn').onclick = () => {
+  if (confirm('Vill du verkligen börja om från början? Då nollställs din träning (men inte eventuella loggboksanteckningar).')) {
+    // Bevara loggbok
+    const savedLog = state.teacherLog;
+    state = defaultState();
+    state.teacherLog = savedLog;
+    saveState();
+    render();
+  }
+};
+
+// Visa versionsnummer i foten
+document.querySelector('footer.site span').textContent = `Ett träningsverktyg byggt för dig som vill bli godkänd. · ${VERSION}`;
+
+initTeacherMode();
+render();
+</script>
+</body>
+</html>

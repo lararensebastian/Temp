@@ -529,7 +529,246 @@
     color: var(--muted);
   }
 
-  /* Milstolpe-toast */
+  /* 14-dagars-plan */
+  .day-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin: 16px 0;
+  }
+  @media (max-width: 400px) {
+    .day-grid { grid-template-columns: repeat(5, 1fr); }
+  }
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 4px;
+    min-height: 60px;
+  }
+  .day-cell .day-num {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .day-cell .day-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .day-cell.done {
+    background: var(--good-soft);
+    border-color: var(--good);
+    color: var(--good);
+  }
+  .day-cell.done .day-label { color: var(--good); }
+  .day-cell.current {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+  }
+  .day-cell.current .day-label { color: var(--accent); font-weight: 600; }
+  .day-cell.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .day-cell:hover:not(.locked) {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  /* Uppställningsvisualisering */
+  .uppstallning {
+    font-family: var(--font-math);
+    font-size: 32px;
+    display: inline-block;
+    padding: 24px 20px 16px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin: 16px auto;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+  .uppstallning .row {
+    display: block;
+    text-align: right;
+    white-space: pre;
+  }
+  .uppstallning .sign {
+    display: inline-block;
+    width: 1ch;
+  }
+  .uppstallning .line {
+    border-bottom: 2px solid var(--ink);
+    margin: 2px 0 4px;
+    height: 0;
+  }
+  .uppstallning .minne {
+    font-size: 16px;
+    color: var(--accent);
+    display: block;
+    text-align: right;
+    line-height: 1;
+    min-height: 1em;
+    margin-bottom: 2px;
+  }
+  .uppstallning .digit {
+    display: inline-block;
+    padding: 1px 2px;
+    transition: background 0.3s ease;
+  }
+  .uppstallning .digit.highlight {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 3px;
+  }
+  .uppstallning .digit.result {
+    background: var(--good-soft);
+    color: var(--good);
+    border-radius: 3px;
+  }
+
+  /* Lektion med steg */
+  .lesson-step {
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    animation: fadein 0.4s ease;
+  }
+
+  .paper-reminder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 14px 0;
+  }
+  .paper-reminder svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .substep-label {
+    font-size: 13px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  /* Visa hur du räknar */
+  .step-block {
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin: 12px 0;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .step-block.locked {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .step-block.done {
+    border-left: 3px solid var(--good);
+    background: var(--good-soft);
+  }
+  .step-input {
+    font-family: var(--font-math);
+    font-size: 18px;
+    padding: 6px 10px;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: var(--paper);
+    width: 90px;
+    text-align: center;
+    color: var(--ink);
+    margin: 0 4px;
+    vertical-align: baseline;
+  }
+  .step-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .step-input.correct {
+    border-color: var(--good);
+    background: var(--good-soft);
+    color: var(--good);
+  }
+  .step-input.wrong {
+    border-color: var(--bad);
+    background: var(--bad-soft);
+    color: var(--bad);
+  }
+  .step-result {
+    font-family: var(--font-math);
+    font-weight: 600;
+    color: var(--good);
+    padding: 0 4px;
+  }
+  .question-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .question-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .question-row.locked { opacity: 0.45; pointer-events: none; }
+  .question-row.done {
+    border-left: 3px solid var(--good);
+    background: var(--good-soft);
+  }
+  .question-row .q-text {
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .question-row .q-input-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .question-row .q-input-row input {
+    flex: 1;
+    max-width: 140px;
+    padding: 8px 12px;
+    font-family: var(--font-math);
+    font-size: 17px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .question-row.done input { background: var(--good-soft); color: var(--good); border-color: var(--good); }
+  .question-row .q-tip {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
   .milestone-toast {
     position: fixed;
     top: 80px;
@@ -875,6 +1114,7 @@
   <div class="log-row">
     <button id="logSave">Spara anteckning</button>
     <button class="ghost" id="logExport">Exportera alla</button>
+    <button class="ghost" id="logVerify">Kontrollera uppgifter</button>
     <button class="ghost" id="logClose">Dölj</button>
   </div>
   <div class="entries" id="logEntries"></div>
@@ -1540,16 +1780,19 @@ const GENS = {
     () => {
       const skala = pick([50, 100, 200, 500]);
       const bild = rand(3, 15);
-      const ans = bild * skala / 100;
+      // bild cm på kartan = bild * skala cm i verkligheten = (bild * skala) / 100 meter
+      const verklig_cm = bild * skala;
+      const ans_m = verklig_cm / 100;
       return {
         type: 'input',
         prompt: `På en karta i skala <span class="math">1:${skala}</span> är en byggnad <span class="math">${bild} cm</span> lång. Hur lång är den i verkligheten? Svara i meter.`,
-        answer: ans / 100,
+        answer: ans_m,
         tolerance: 0.01,
         steps: [
           `Skala 1:${skala} betyder att 1 cm på kartan = ${skala} cm i verkligheten.`,
-          `${bild} · ${skala} = ${bild*skala} cm = ${fmtNum(ans/100)} m.`,
-          `Svar: ${fmtNum(ans/100)} m`
+          `${bild} cm på kartan = ${bild} · ${skala} = ${verklig_cm} cm i verkligheten.`,
+          `${verklig_cm} cm = ${fmtNum(ans_m)} m (dela med 100 för att gå från cm till meter).`,
+          `Svar: ${fmtNum(ans_m)} m`
         ]
       };
     },
@@ -2196,6 +2439,354 @@ const RESONEMANG = [
 ];
 
 /* ============================================================
+   14-DAGARS-PLAN: DE FYRA RÄKNESÄTTEN
+   
+   Eleven jobbar med ett pass per dag i 14 dagar. Varje pass har:
+   1. Lektion med animerad metod
+   2. Guidad övning (steg-för-steg)
+   3. Självständig övning
+   4. Avslut med vad som kommer imorgon
+============================================================ */
+
+const PLAN_14 = [
+  {
+    day: 1,
+    title: 'Addition — huvudräkning',
+    subtitle: 'Lägga ihop tal i huvudet',
+    introText: 'Idag tränar vi på att lägga ihop tal i huvudet. Du behöver inget papper idag — det kommer imorgon.',
+    method: 'addition-huvud',
+    tips: 'Dela upp talen i tiotal och ental. Lägg ihop tiotalen först, sedan entalen.',
+    exampleSteps: [
+      { text: 'Ta talet 37 + 25.', highlight: null },
+      { text: 'Dela upp i tiotal och ental: 37 = 30 + 7, och 25 = 20 + 5.', highlight: 'split' },
+      { text: 'Lägg ihop tiotalen: 30 + 20 = 50.', highlight: 'tens' },
+      { text: 'Lägg ihop entalen: 7 + 5 = 12.', highlight: 'ones' },
+      { text: 'Lägg ihop allt: 50 + 12 = 62.', highlight: 'total' },
+      { text: 'Svar: 37 + 25 = 62.', highlight: 'answer' },
+    ],
+    example: { a: 37, b: 25 },
+    needsPaper: false,
+  },
+  {
+    day: 2,
+    title: 'Addition — uppställning',
+    subtitle: 'Stora tal som man behöver ställa upp',
+    introText: 'Idag lär du dig att ställa upp addition. För större tal är det tryggare än huvudräkning. Ta fram papper och penna!',
+    method: 'addition-uppstallning',
+    tips: 'Ställ talen under varandra. Entalet under entalet, tiotalet under tiotalet. Räkna från höger till vänster.',
+    exampleSteps: [
+      { text: 'Vi ska räkna 347 + 258. Ställ upp dem under varandra.', highlight: 'setup' },
+      { text: 'Börja från höger: 7 + 8 = 15. Skriv 5, minnessiffra 1.', highlight: 'ones' },
+      { text: 'Tiotal: 4 + 5 = 9, plus minnessiffran 1 = 10. Skriv 0, minnessiffra 1.', highlight: 'tens' },
+      { text: 'Hundratal: 3 + 2 = 5, plus minnessiffran 1 = 6. Skriv 6.', highlight: 'hundreds' },
+      { text: 'Svar: 347 + 258 = 605.', highlight: 'answer' },
+    ],
+    example: { a: 347, b: 258 },
+    needsPaper: true,
+  },
+  {
+    day: 3,
+    title: 'Addition — blandat',
+    subtitle: 'Välj själv metod: huvudräkning eller uppställning',
+    introText: 'Idag blandar vi. För små tal räcker huvudräkning. För större tal — ställ upp. Du väljer själv.',
+    method: 'addition-blandat',
+    tips: 'Börja alltid med en uppskattning. Ungefär hur stort blir svaret? Det hjälper dig välja metod.',
+    exampleSteps: null, // ingen animerad lektion idag - repetition
+    needsPaper: true,
+  },
+  {
+    day: 4,
+    title: 'Subtraktion — huvudräkning',
+    subtitle: 'Dra bort tal i huvudet',
+    introText: 'Idag lär vi oss att dra bort i huvudet. Samma trick som addition: dela upp i tiotal och ental.',
+    method: 'subtraktion-huvud',
+    tips: 'Dela upp det tal du ska dra bort. Dra bort tiotalen först, sedan entalen.',
+    exampleSteps: [
+      { text: 'Ta 54 − 27.', highlight: null },
+      { text: 'Dela upp: 27 = 20 + 7.', highlight: 'split' },
+      { text: 'Dra bort tiotalen: 54 − 20 = 34.', highlight: 'tens' },
+      { text: 'Dra bort entalen: 34 − 7 = 27.', highlight: 'ones' },
+      { text: 'Svar: 54 − 27 = 27.', highlight: 'answer' },
+    ],
+    example: { a: 54, b: 27 },
+    needsPaper: false,
+  },
+  {
+    day: 5,
+    title: 'Subtraktion — uppställning med lån',
+    subtitle: 'När man behöver "låna" från nästa siffra',
+    introText: 'Idag tränar vi uppställning med lån. Det är när den undre siffran är större än den övre. Papper och penna fram!',
+    method: 'subtraktion-uppstallning',
+    tips: 'Om entalet undertill är större: låna 10 från tiotalet ovanför. Stryk över och skriv om.',
+    exampleSteps: [
+      { text: 'Vi räknar 523 − 168. Ställ upp talen.', highlight: 'setup' },
+      { text: 'Entalen: 3 − 8 går inte. Låna från tiotalet!', highlight: 'borrow1' },
+      { text: 'Efter lån: 13 − 8 = 5. Tiotalet blir 1 istället för 2.', highlight: 'ones' },
+      { text: 'Tiotalen: 1 − 6 går inte. Låna från hundratalet!', highlight: 'borrow2' },
+      { text: 'Efter lån: 11 − 6 = 5. Hundratalet blir 4 istället för 5.', highlight: 'tens' },
+      { text: 'Hundratalen: 4 − 1 = 3.', highlight: 'hundreds' },
+      { text: 'Svar: 523 − 168 = 355.', highlight: 'answer' },
+    ],
+    example: { a: 523, b: 168 },
+    needsPaper: true,
+  },
+  {
+    day: 6,
+    title: 'Subtraktion — blandat',
+    subtitle: 'Välj metod själv',
+    introText: 'Idag blandar vi subtraktion. Små tal i huvudet, stora på papper.',
+    method: 'subtraktion-blandat',
+    tips: 'Kontrollera alltid: lägg ihop svaret och det du drog bort. Ska bli det ursprungliga talet.',
+    exampleSteps: null,
+    needsPaper: true,
+  },
+  {
+    day: 7,
+    title: 'Veckoprov — addition och subtraktion',
+    subtitle: 'Visa vad du lärt dig den här veckan',
+    introText: 'En vecka gjord! Idag blandar vi båda räknesätten. Papper och penna nära till hands.',
+    method: 'veckoprov-1',
+    tips: 'Läs varje uppgift noga. Är det plus eller minus? Det är lätt att missa tecknet.',
+    exampleSteps: null,
+    needsPaper: true,
+    isTest: true,
+  },
+  {
+    day: 8,
+    title: 'Multiplikation — tabellen',
+    subtitle: 'Snabb koll på multiplikationstabellen',
+    introText: 'Innan vi ställer upp multiplikation behöver tabellen sitta. Idag kör vi en snabb koll.',
+    method: 'multiplikation-tabell',
+    tips: 'Kan du inte en tabell på rak arm? Använd modulen "Multiplikationstabellen" i menyn — den tränar effektivt.',
+    exampleSteps: null,
+    needsPaper: false,
+  },
+  {
+    day: 9,
+    title: 'Multiplikation — uppställning',
+    subtitle: 'Stora tal multiplicerade',
+    introText: 'Idag lär du dig ställa upp multiplikation. Det liknar addition men med ett extra steg. Papper och penna!',
+    method: 'multiplikation-uppstallning',
+    tips: 'Multiplicera en siffra i taget från höger. Skriv minnessiffror ovanför tiotalet.',
+    exampleSteps: [
+      { text: 'Vi räknar 47 · 6. Ställ upp.', highlight: 'setup' },
+      { text: 'Börja från höger: 6 · 7 = 42. Skriv 2, minnessiffra 4.', highlight: 'ones' },
+      { text: 'Tiotal: 6 · 4 = 24, plus minnessiffran 4 = 28. Skriv 28.', highlight: 'tens' },
+      { text: 'Svar: 47 · 6 = 282.', highlight: 'answer' },
+    ],
+    example: { a: 47, b: 6 },
+    needsPaper: true,
+  },
+  {
+    day: 10,
+    title: 'Multiplikation — blandat',
+    subtitle: 'Både huvudräkning och uppställning',
+    introText: 'Idag blandar vi multiplikation. Små blir huvudräkning, stora blir uppställning.',
+    method: 'multiplikation-blandat',
+    tips: 'Tabellen ska sitta automatiskt — tar du mer än 3 sekunder, gå tillbaka och öva tabellen.',
+    exampleSteps: null,
+    needsPaper: true,
+  },
+  {
+    day: 11,
+    title: 'Division — kort division',
+    subtitle: 'Enkel division i huvudet',
+    introText: 'Division är baklängesmultiplikation. Frågan "20 ÷ 4" är samma som "4 · vad = 20?"',
+    method: 'division-kort',
+    tips: 'Om du kan tabellen, kan du division. De är samma sak fast bakåt.',
+    exampleSteps: [
+      { text: 'Ta 48 ÷ 6.', highlight: null },
+      { text: 'Fråga: "6 · vad = 48?"', highlight: 'question' },
+      { text: 'Från tabellen: 6 · 8 = 48.', highlight: 'table' },
+      { text: 'Svar: 48 ÷ 6 = 8.', highlight: 'answer' },
+    ],
+    example: { a: 48, b: 6 },
+    needsPaper: false,
+  },
+  {
+    day: 12,
+    title: 'Division — kort division med rest',
+    subtitle: 'När svaret inte blir jämnt',
+    introText: 'Ibland går talet inte jämnt ut. Då får vi en rest. Papper och penna kan hjälpa.',
+    method: 'division-rest',
+    tips: 'Hitta det största tal i tabellen som är mindre än eller lika med ditt tal. Det som blir över är resten.',
+    exampleSteps: [
+      { text: 'Ta 23 ÷ 4.', highlight: null },
+      { text: 'Vilket tal i 4-ans tabell är närmast 23, men inte större?', highlight: 'question' },
+      { text: '4 · 5 = 20. Det är så nära vi kommer utan att gå över.', highlight: 'table' },
+      { text: '23 − 20 = 3. Det blir resten.', highlight: 'rest' },
+      { text: 'Svar: 23 ÷ 4 = 5 rest 3.', highlight: 'answer' },
+    ],
+    example: { a: 23, b: 4 },
+    needsPaper: true,
+  },
+  {
+    day: 13,
+    title: 'Räkneordning',
+    subtitle: 'Vilken ordning räknesätten kommer i',
+    introText: 'När en uppgift har flera räknesätt finns det regler för vilket som görs först. Annars får alla olika svar!',
+    method: 'rakneordning',
+    tips: 'Minns: Parenteser först. Sedan multiplikation och division. Sist: addition och subtraktion.',
+    exampleSteps: [
+      { text: 'Ta 3 + 4 · 2.', highlight: null },
+      { text: 'Regel: multiplikation räknas FÖRE addition.', highlight: 'rule' },
+      { text: 'Först: 4 · 2 = 8.', highlight: 'mult' },
+      { text: 'Sedan: 3 + 8 = 11.', highlight: 'add' },
+      { text: 'Svar: 3 + 4 · 2 = 11 (inte 14!).', highlight: 'answer' },
+    ],
+    example: { expr: '3 + 4 · 2', answer: 11 },
+    needsPaper: false,
+  },
+  {
+    day: 14,
+    title: 'Slutprov — alla fyra räknesätten',
+    subtitle: 'Du har gått hela vägen!',
+    introText: 'Sista dagen. Alla fyra räknesätten blandas. Ta det lugnt och använd papper när du behöver.',
+    method: 'slutprov-14',
+    tips: 'Du har tränat varje dag i två veckor. Du kan det här. Lita på dig själv.',
+    exampleSteps: null,
+    needsPaper: true,
+    isTest: true,
+  },
+];
+
+/* ============================================================
+   VISA HUR DU RÄKNAR - lösningsstruktur
+   
+   Två nivåer:
+   - Nivå 1 (komplettera): Eleven fyller i tomma rutor i en halvgjord lösning
+   - Nivå 2 (bygg själv): Eleven svarar på frågor som leder genom lösningen
+============================================================ */
+
+const UTRAKNING_NIVA1 = [
+  {
+    id: 'n1_rabatt',
+    område: 'Procent',
+    uppgift: 'En tröja kostar <span class="math">200 kr</span>. Den säljs med <span class="math">25 %</span> rabatt. Vad kostar den nu?',
+    steg: [
+      { text: 'Rabatten i kronor räknar jag ut: <span class="math">200 · </span>', input: 0.25, suffix: ' <span class="math">= </span>', result: 50, resultSuffix: ' <span class="math">kr</span>' },
+      { text: 'Det nya priset blir: <span class="math">200 − </span>', input: 50, suffix: ' <span class="math">= </span>', result: 150, resultSuffix: ' <span class="math">kr</span>' },
+    ],
+    svar: 150,
+    enhet: 'kr',
+    tips: '25 % kan skrivas som decimaltalet 0,25.',
+  },
+  {
+    id: 'n1_area_rektangel',
+    område: 'Geometri',
+    uppgift: 'En rektangel är <span class="math">8 cm</span> bred och <span class="math">5 cm</span> hög. Vad är arean?',
+    steg: [
+      { text: 'Formel för rektangelns area: <span class="math">bas · höjd = </span>', input: 8, suffix: ' <span class="math"> · </span>', input2: 5, resultPrefix: ' <span class="math">= </span>', result: 40, resultSuffix: ' <span class="math">cm²</span>' },
+    ],
+    svar: 40,
+    enhet: 'cm²',
+    tips: 'Arean av en rektangel = bas multiplicerat med höjd.',
+  },
+  {
+    id: 'n1_ekvation',
+    område: 'Algebra',
+    uppgift: 'Lös ekvationen: <span class="math">3x + 5 = 20</span>',
+    steg: [
+      { text: 'Dra bort 5 från båda sidor: <span class="math">3x = </span>', input: 15, resultPrefix: '', result: null },
+      { text: 'Dela båda sidor med 3: <span class="math">x = </span>', input: 5, resultPrefix: '', result: null },
+    ],
+    svar: 5,
+    enhet: '',
+    svarText: 'x = 5',
+    tips: 'Jobba bort termer en i taget tills bara x står ensamt.',
+  },
+  {
+    id: 'n1_medel',
+    område: 'Statistik',
+    uppgift: 'Vad är medelvärdet av talen <span class="math">4, 7, 9, 12</span>?',
+    steg: [
+      { text: 'Summera alla talen: <span class="math">4 + 7 + 9 + 12 = </span>', input: 32, resultPrefix: '', result: null },
+      { text: 'Dela med antalet (4): <span class="math">32 ÷ 4 = </span>', input: 8, resultPrefix: '', result: null },
+    ],
+    svar: 8,
+    enhet: '',
+    tips: 'Medelvärde = summan av alla tal delat med antalet tal.',
+  },
+  {
+    id: 'n1_pythagoras',
+    område: 'Pythagoras',
+    uppgift: 'En rätvinklig triangel har kateter <span class="math">3 cm</span> och <span class="math">4 cm</span>. Hur lång är hypotenusan?',
+    steg: [
+      { text: 'Pythagoras: <span class="math">a² + b² = c²</span>. Sätt in: <span class="math">3² + 4² = </span>', input: 25, resultPrefix: '', result: null },
+      { text: 'Ta kvadratroten: <span class="math">c = √25 = </span>', input: 5, resultPrefix: '', result: null, suffix: ' <span class="math">cm</span>' },
+    ],
+    svar: 5,
+    enhet: 'cm',
+    tips: '3² betyder 3·3 = 9. Och 4² = 16. Tillsammans 25.',
+  },
+];
+
+const UTRAKNING_NIVA2 = [
+  {
+    id: 'n2_målning',
+    område: 'Geometri och pengar',
+    uppgift: 'Anna ska måla en vägg. Väggen är <span class="math">5 m</span> bred och <span class="math">2,5 m</span> hög. En burk färg räcker till <span class="math">8 m²</span> och kostar <span class="math">120 kr</span>. Hur många burkar behöver Anna köpa, och vad blir det totalt?',
+    frågor: [
+      { fråga: 'Vad är väggens area i m²?', svar: 12.5, tips: 'Area = bredd · höjd' },
+      { fråga: 'Hur många burkar behövs (heltal — du kan inte köpa halva)?', svar: 2, tips: '12,5 ÷ 8 = 1,5625 → behöver 2 burkar' },
+      { fråga: 'Vad blir totalkostnaden i kronor?', svar: 240, tips: '2 burkar · 120 kr' },
+    ],
+    skrivFält: 'Skriv hur du tänker (några meningar):',
+    exempelLösning: 'Väggens area = 5 · 2,5 = 12,5 m². Antal burkar: 12,5 ÷ 8 = 1,5625. Jag kan inte köpa halva burkar, så jag behöver 2 burkar. Total kostnad: 2 · 120 = 240 kr. Svar: Anna behöver 2 burkar för totalt 240 kr.',
+    bedömning: ['Räknade ut väggens area', 'Visade divisionen för antal burkar', 'Avrundade uppåt (kan inte köpa halva)', 'Räknade ut totalkostnaden', 'Skrev svar med enhet'],
+  },
+  {
+    id: 'n2_rabatt_baklänges',
+    område: 'Procent baklänges',
+    uppgift: 'En jacka är nedsatt med <span class="math">20 %</span>. Nya priset är <span class="math">640 kr</span>. Vad kostade jackan från början?',
+    frågor: [
+      { fråga: 'Hur många procent av ursprungspriset är nya priset?', svar: 80, tips: '100 % − 20 % = 80 %' },
+      { fråga: 'Vad är 1 % av ursprungspriset (i kronor)?', svar: 8, tips: '640 ÷ 80 = 8' },
+      { fråga: 'Vad var ursprungspriset (100 %)?', svar: 800, tips: '1 % · 100 = 800 kr' },
+    ],
+    skrivFält: 'Förklara med egna ord hur du löste det:',
+    exempelLösning: 'Nya priset är 80 % av ursprungspriset (100 % − 20 % rabatt = 80 %). Alltså: 80 % = 640 kr. Då är 1 % = 640 ÷ 80 = 8 kr. Och 100 % = 8 · 100 = 800 kr. Kontroll: 20 % av 800 = 160 kr rabatt. 800 − 160 = 640. Stämmer! Svar: Jackan kostade 800 kr från början.',
+    bedömning: ['Förklarade att nya priset är 80 %', 'Räknade ut vad 1 % är', 'Räknade ut vad 100 % är', 'Gjorde en kontroll', 'Skrev svar med enhet'],
+  },
+  {
+    id: 'n2_mobil',
+    område: 'Algebra i vardagen',
+    uppgift: 'Mobiloperatör A: <span class="math">99 kr</span>/månad + <span class="math">2 kr</span> per GB data. Mobiloperatör B: <span class="math">149 kr</span>/månad och all data ingår. Vid hur många GB blir A och B lika dyra?',
+    frågor: [
+      { fråga: 'Vad kostar A om man använder x GB (lös inte än, ange uttryck för x = 10)?', svar: 119, tips: '99 + 2·10 = 99 + 20 = 119' },
+      { fråga: 'Vid vilket antal GB blir A och B lika dyra?', svar: 25, tips: '99 + 2x = 149 → 2x = 50 → x = 25' },
+    ],
+    skrivFält: 'Skriv ekvationen och visa hur du löste den:',
+    exempelLösning: 'Låt x = antal GB per månad. A kostar: 99 + 2x kr. B kostar: 149 kr (fast). Jag vill veta när de är lika: 99 + 2x = 149. Dra bort 99: 2x = 50. Dela med 2: x = 25. Svar: Vid 25 GB är abonnemangen lika dyra.',
+    bedömning: ['Skrev ett uttryck med x', 'Ställde upp ekvation där priserna är lika', 'Löste ekvationen steg för steg', 'Skrev tydligt svar med enhet'],
+  },
+  {
+    id: 'n2_kr_per_h',
+    område: 'Proportionalitet',
+    uppgift: 'En person tjänar <span class="math">175 kr</span> per timme. Hur många timmar måste personen jobba för att tjäna <span class="math">3 500 kr</span>?',
+    frågor: [
+      { fråga: 'Hur många timmar?', svar: 20, tips: '3500 ÷ 175 = 20' },
+      { fråga: 'Om personen istället tjänar 200 kr/h, hur många timmar då?', svar: 17.5, tips: '3500 ÷ 200 = 17,5' },
+    ],
+    skrivFält: 'Förklara hur du tänker:',
+    exempelLösning: 'För att tjäna 3 500 kr på 175 kr/h: dela totalbeloppet med timlönen. 3 500 ÷ 175 = 20 timmar. Vid 200 kr/h: 3 500 ÷ 200 = 17,5 timmar (alltså 17 timmar och 30 minuter). Svar: 20 timmar vid 175 kr/h, eller 17,5 timmar vid 200 kr/h.',
+    bedömning: ['Identifierade att man ska dividera', 'Visade uträkningen', 'Tolkade 17,5 timmar (eller godtog decimaltal)', 'Skrev svar med enhet'],
+  },
+  {
+    id: 'n2_volym',
+    område: 'Geometri',
+    uppgift: 'Ett akvarium har formen av ett rätblock. Det är <span class="math">60 cm</span> långt, <span class="math">30 cm</span> brett och <span class="math">40 cm</span> högt. Hur många liter vatten ryms i akvariet? (1 liter = 1000 cm³)',
+    frågor: [
+      { fråga: 'Vad är volymen i cm³?', svar: 72000, tips: '60 · 30 · 40 = 72 000' },
+      { fråga: 'Hur många liter är det?', svar: 72, tips: '72 000 ÷ 1000 = 72' },
+    ],
+    skrivFält: 'Visa båda stegen i din lösning:',
+    exempelLösning: 'Volym av rätblock = längd · bredd · höjd = 60 · 30 · 40 = 72 000 cm³. Eftersom 1 liter = 1 000 cm³, blir det 72 000 ÷ 1 000 = 72 liter. Svar: Akvariet rymmer 72 liter vatten.',
+    bedömning: ['Använde formeln längd · bredd · höjd', 'Räknade ut volymen i cm³', 'Räknade om till liter', 'Skrev svar med enhet (liter)'],
+  },
+];
+
+/* ============================================================
    MULTIPLIKATIONSTABELL - SPACED REPETITION
    
    Alla unika kombinationer från 2·2 till 9·9 = 36 st (tack vare kommutativitet).
@@ -2447,6 +3038,7 @@ function loadState() {
       if (!parsed.theme) parsed.theme = 'papper';
       if (parsed.streak == null) parsed.streak = 0;
       if (!parsed.milestonesAwarded) parsed.milestonesAwarded = {};
+      if (!parsed.plan14) parsed.plan14 = { completedDays: [], currentDay: 1, lastDayDate: null, dayStats: {} };
       return parsed;
     }
   } catch (e) {}
@@ -2482,6 +3074,13 @@ function defaultState() {
     streak: 0,
     lastActiveDate: null, // ISO datum-sträng 'YYYY-MM-DD'
     milestonesAwarded: {},  // keys som "first_10_correct"
+    // 14-dagars-plan för de fyra räknesätten
+    plan14: {
+      completedDays: [], // t.ex. [1, 2, 3]
+      currentDay: 1,
+      lastDayDate: null, // ISO-datum för senaste pass
+      dayStats: {}, // per dag: {correct: n, total: n, date: '...'}
+    },
   };
 }
 function saveState() {
@@ -2536,6 +3135,14 @@ function render() {
     tableDiag: renderTableDiag,
     tableTrain: renderTableTrain,
     tableMap: renderTableMap,
+    planOverview: renderPlanOverview,
+    planDayLesson: renderPlanDayLesson,
+    planDayPractice: renderPlanDayPractice,
+    planDayDone: renderPlanDayDone,
+    utrakningMenu: renderUtrakningMenu,
+    utrakningN1: renderUtrakningN1,
+    utrakningN2: renderUtrakningN2,
+    verify: renderVerify,
   };
   const fn = screens[state.screen] || renderStart;
   fn();
@@ -2717,6 +3324,16 @@ function renderTopicMenu() {
       <h3 style="margin-top:0;">Extra träning för högre betyg</h3>
       <p class="muted" style="font-size:15px;">På NP behöver du också kunna förklara hur du tänker. Här lär du dig det.</p>
       <div class="topic-grid" style="margin-top:14px;">
+        <button class="topic-btn" id="goPlan14">
+          ${iconHTML('räknesätt')}
+          <span class="name">14-dagars-plan: de fyra räknesätten</span>
+          <span class="meta">Lär dig steg för steg, ett räknesätt i taget</span>
+          ${(() => {
+            const p14 = state.plan14 || { completedDays: [] };
+            const pct = Math.round((p14.completedDays.length / 14) * 100);
+            return `<span class="bar"><span style="width:${pct}%"></span></span>`;
+          })()}
+        </button>
         <button class="topic-btn" id="goTable">
           ${iconHTML('tabell')}
           <span class="name">Multiplikationstabellen</span>
@@ -2737,6 +3354,11 @@ function renderTopicMenu() {
           <span class="name">Skriv din lösning</span>
           <span class="meta">Större uppgifter där du förklarar steg för steg</span>
         </button>
+        <button class="topic-btn" id="goUtrakning">
+          ${iconHTML('resonemang')}
+          <span class="name">Visa hur du räknar</span>
+          <span class="meta">Träna på att visa uträkningar för B, C och D</span>
+        </button>
         <button class="topic-btn" id="goNP">
           ${iconHTML('npProv')}
           <span class="name">Riktiga gamla NP-prov</span>
@@ -2753,8 +3375,10 @@ function renderTopicMenu() {
   const goFinalEarly = document.getElementById('goFinalEarly');
   if (goFinalEarly) goFinalEarly.onclick = startFinalTest;
   document.getElementById('goTable').onclick = () => { state.screen = 'tableMenu'; render(); };
+  document.getElementById('goPlan14').onclick = () => { state.screen = 'planOverview'; render(); };
   document.getElementById('goStrategier').onclick = () => { state.screen = 'strategier'; render(); };
   document.getElementById('goResonemang').onclick = () => { state.screen = 'resonemangList'; render(); };
+  document.getElementById('goUtrakning').onclick = () => { state.screen = 'utrakningMenu'; render(); };
   document.getElementById('goNP').onclick = () => { state.screen = 'npProv'; render(); };
 }
 
@@ -3440,7 +4064,7 @@ function renderTableDiag() {
     <div class="card fade">
       <div class="muted" style="margin-bottom:4px;">Fråga ${d.index + 1} av ${d.pairs.length}</div>
       <div class="table-big-prompt">${a} · ${b} = ?</div>
-      <input class="table-answer-input" id="tableAns" type="number" inputmode="numeric" autocomplete="off" />
+      <input class="table-answer-input" id="tableAns" type="text" inputmode="numeric" autocomplete="off" />
       <div class="row end" style="margin-top:20px;">
         <button id="submitTable">Svara</button>
       </div>
@@ -3532,7 +4156,7 @@ function renderTableTrain() {
     <div class="card fade">
       <div class="muted" style="margin-bottom:4px;">Tränar det du behöver mest</div>
       <div class="table-big-prompt">${showA} · ${showB} = ?</div>
-      <input class="table-answer-input" id="tableAns" type="number" inputmode="numeric" autocomplete="off" />
+      <input class="table-answer-input" id="tableAns" type="text" inputmode="numeric" autocomplete="off" />
       <div class="row end" style="margin-top:20px;">
         <button id="submitTable">Svara</button>
       </div>
@@ -3652,6 +4276,1143 @@ function renderTableMap() {
   document.getElementById('goTrain').onclick = startTableTrain;
   document.getElementById('backTable').onclick = () => { state.screen = 'tableMenu'; render(); };
 }
+
+/* ============================================================
+   14-DAGARS-PLAN: RENDER-FUNKTIONER
+============================================================ */
+
+function renderPlanOverview() {
+  progLabel().textContent = '14-dagars-plan';
+  const p14 = state.plan14;
+  const nextDay = Math.max(...p14.completedDays, 0) + 1;
+  const clampedNext = Math.min(nextDay, 14);
+  const pctDone = Math.round((p14.completedDays.length / 14) * 100);
+
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>De fyra räknesätten på 14 dagar</h2>
+      <p class="lead">Ett kort pass per dag. Du lär dig addition, subtraktion, multiplikation och division — från grunden.</p>
+      <p>Varje pass tar cirka 15 minuter. Gör ett pass per dag. Missa inte för många dagar i rad — det är rutinen som gör att du lär dig.</p>
+
+      <div class="stat-row" style="margin-top:18px;">
+        <div class="stat-box">
+          <div class="num">${p14.completedDays.length}</div>
+          <div class="lbl">Dagar klara</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${14 - p14.completedDays.length}</div>
+          <div class="lbl">Dagar kvar</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${pctDone}%</div>
+          <div class="lbl">Klart</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Klicka på dagens pass</h3>
+      <div class="day-grid">
+        ${PLAN_14.map(d => {
+          const done = p14.completedDays.includes(d.day);
+          const isCurrent = d.day === clampedNext;
+          const locked = d.day > clampedNext;
+          const cls = done ? 'done' : isCurrent ? 'current' : locked ? 'locked' : '';
+          return `
+            <button class="day-cell ${cls}" data-day="${d.day}" ${locked ? 'disabled' : ''}>
+              <div class="day-num">${d.day}</div>
+              <div class="day-label">${done ? 'klar' : isCurrent ? 'idag' : ''}</div>
+            </button>
+          `;
+        }).join('')}
+      </div>
+      <p class="muted" style="font-size:14px; margin-top:10px;">Du kan alltid gå tillbaka och göra om en dag. Låsta dagar öppnas när du gjort dagarna innan.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Näst på tur</h3>
+      ${clampedNext <= 14 ? `
+        <div style="padding:14px 18px; background:var(--accent-soft); border-left:3px solid var(--accent); border-radius:4px;">
+          <div style="font-size:13px; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); font-weight:600;">Dag ${clampedNext}</div>
+          <div style="font-size:18px; font-weight:600; margin-top:4px;">${PLAN_14[clampedNext-1].title}</div>
+          <div class="muted" style="font-size:14px; margin-top:2px;">${PLAN_14[clampedNext-1].subtitle}</div>
+          <button id="startDay" style="margin-top:14px;">Starta dag ${clampedNext}</button>
+        </div>
+      ` : `
+        <div style="padding:14px 18px; background:var(--good-soft); border-left:3px solid var(--good); border-radius:4px;">
+          <strong>Du är klar med hela planen!</strong>
+          <p style="margin:6px 0 0;">Otroligt bra. Du kan nu räkna med alla fyra räknesätten. Gå tillbaka och gör om vilken dag du vill för att hålla kunskaperna färska.</p>
+        </div>
+      `}
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka till huvudmeny</button>
+    </div>
+  `;
+  document.querySelectorAll('.day-cell:not([disabled])').forEach(btn => {
+    btn.onclick = () => {
+      state.plan14.currentDay = parseInt(btn.dataset.day);
+      saveState();
+      state.screen = 'planDayLesson';
+      state.planLessonStep = 0;
+      render();
+    };
+  });
+  const startDayBtn = document.getElementById('startDay');
+  if (startDayBtn) startDayBtn.onclick = () => {
+    state.plan14.currentDay = clampedNext;
+    saveState();
+    state.screen = 'planDayLesson';
+    state.planLessonStep = 0;
+    render();
+  };
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+// Visa uppställning med möjlighet att highlighta olika steg
+function renderUppstallning(a, b, operator, highlight, minne1, minne2, result) {
+  const aStr = String(a);
+  const bStr = String(b);
+  const width = Math.max(aStr.length, bStr.length, result ? String(result).length : 0) + 1;
+  const pad = (s) => s.padStart(width, ' ');
+  const resultStr = result != null ? pad(String(result)) : '';
+  // Minnessiffror ovanför
+  let minneLine = '';
+  if (minne1 || minne2) {
+    let arr = new Array(width).fill(' ');
+    if (minne1) arr[arr.length - 2] = String(minne1);
+    if (minne2) arr[arr.length - 3] = String(minne2);
+    minneLine = arr.join('');
+  }
+  return `
+    <div class="uppstallning">
+      <div class="minne">${minneLine || '&nbsp;'}</div>
+      <div class="row">${pad(aStr)}</div>
+      <div class="row">${operator}${pad(bStr).substring(1)}</div>
+      <div class="line"></div>
+      <div class="row">${resultStr || '&nbsp;'.repeat(width)}</div>
+    </div>
+  `;
+}
+
+function renderPlanDayLesson() {
+  const day = PLAN_14[state.plan14.currentDay - 1];
+  progLabel().textContent = `Dag ${day.day} — lektion`;
+
+  const stepIdx = state.planLessonStep || 0;
+  const steps = day.exampleSteps;
+
+  if (!steps) {
+    // Ingen lektion — hoppa direkt till övning
+    state.screen = 'planDayPractice';
+    render();
+    return;
+  }
+
+  const currentStep = steps[stepIdx];
+  const visibleSteps = steps.slice(0, stepIdx + 1);
+  const isLast = stepIdx >= steps.length - 1;
+
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="font-size:13px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Dag ${day.day} av 14</div>
+      <h2 style="margin-top:2px;">${day.title}</h2>
+      <p class="lead">${day.subtitle}</p>
+
+      ${stepIdx === 0 ? `
+        <p>${day.introText}</p>
+        ${day.needsPaper ? `
+          <div class="paper-reminder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Ta fram papper och penna innan vi börjar.</span>
+          </div>
+        ` : ''}
+      ` : ''}
+    </div>
+
+    <div class="card">
+      <div class="substep-label">Lektion — steg ${stepIdx + 1} av ${steps.length}</div>
+      ${visibleSteps.map((s, i) => `
+        <div class="lesson-step">${s.text}</div>
+      `).join('')}
+
+      <div class="row" style="margin-top:20px;">
+        <div class="spacer"></div>
+        ${isLast ? `
+          <button id="goPractice">Nu är det din tur</button>
+        ` : `
+          <button id="nextStep">Nästa steg</button>
+        `}
+      </div>
+    </div>
+
+    ${day.tips ? `
+      <div class="card">
+        <h3 style="margin-top:0; font-size:15px;">Kom ihåg</h3>
+        <p style="margin:0;">${day.tips}</p>
+      </div>
+    ` : ''}
+
+    <div class="linkrow">
+      <button class="ghost" id="backOverview">Avbryt och tillbaka till översikten</button>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById('nextStep');
+  if (nextBtn) nextBtn.onclick = () => {
+    state.planLessonStep = stepIdx + 1;
+    render();
+  };
+  const goPractice = document.getElementById('goPractice');
+  if (goPractice) goPractice.onclick = () => {
+    state.screen = 'planDayPractice';
+    state.planPractice = {
+      questions: generatePlanDayQuestions(day),
+      index: 0,
+      correct: 0,
+      total: 0,
+    };
+    render();
+  };
+  document.getElementById('backOverview').onclick = () => {
+    state.screen = 'planOverview';
+    render();
+  };
+}
+
+// Generera uppgifter för en given dag, baserat på metod
+function generatePlanDayQuestions(day) {
+  const qs = [];
+  switch (day.method) {
+    case 'addition-huvud':
+      for (let i = 0; i < 6; i++) {
+        const a = rand(15, 85);
+        const b = rand(15, 85);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} + ${b}</span>`, answer: a + b,
+          steps: [
+            `Dela upp: ${a} = ${Math.floor(a/10)*10} + ${a%10}, och ${b} = ${Math.floor(b/10)*10} + ${b%10}.`,
+            `Tiotalen: ${Math.floor(a/10)*10} + ${Math.floor(b/10)*10} = ${Math.floor(a/10)*10 + Math.floor(b/10)*10}.`,
+            `Entalen: ${a%10} + ${b%10} = ${a%10 + b%10}.`,
+            `Summa: ${a + b}.`
+          ]});
+      }
+      break;
+    case 'addition-uppstallning':
+      for (let i = 0; i < 5; i++) {
+        const a = rand(100, 699);
+        const b = rand(100, 499);
+        qs.push({ type: 'input', prompt: `Ställ upp och räkna: <span class="math">${a} + ${b}</span>`, answer: a + b,
+          needsPaper: true,
+          steps: [
+            `Ställ upp talen under varandra. Ental under ental, tiotal under tiotal.`,
+            `Räkna från höger. Entalen: ${a%10} + ${b%10} = ${a%10 + b%10}${(a%10 + b%10) >= 10 ? ' (minnessiffra 1)' : ''}.`,
+            `Fortsätt med tiotal och hundratal på samma sätt.`,
+            `Svar: ${a + b}.`
+          ]});
+      }
+      break;
+    case 'addition-blandat':
+      for (let i = 0; i < 6; i++) {
+        const small = Math.random() < 0.5;
+        const a = small ? rand(15, 85) : rand(100, 599);
+        const b = small ? rand(15, 85) : rand(100, 499);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} + ${b}</span>`, answer: a + b,
+          needsPaper: !small,
+          steps: [ small ? `Huvudräkning: dela upp i tiotal och ental.` : `Ställ upp på papper.`, `Svar: ${a + b}.` ]});
+      }
+      break;
+    case 'subtraktion-huvud':
+      for (let i = 0; i < 6; i++) {
+        const a = rand(40, 99);
+        const b = rand(15, a - 5);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} − ${b}</span>`, answer: a - b,
+          steps: [
+            `Dela upp ${b} = ${Math.floor(b/10)*10} + ${b%10}.`,
+            `${a} − ${Math.floor(b/10)*10} = ${a - Math.floor(b/10)*10}.`,
+            `${a - Math.floor(b/10)*10} − ${b%10} = ${a - b}.`,
+            `Svar: ${a - b}.`
+          ]});
+      }
+      break;
+    case 'subtraktion-uppstallning':
+      for (let i = 0; i < 5; i++) {
+        const a = rand(300, 899);
+        const b = rand(100, a - 50);
+        qs.push({ type: 'input', prompt: `Ställ upp och räkna: <span class="math">${a} − ${b}</span>`, answer: a - b,
+          needsPaper: true,
+          steps: [
+            `Ställ upp. Räkna från höger.`,
+            `Om entalet undertill är större än det ovanpå: låna från tiotalet.`,
+            `Svar: ${a - b}.`
+          ]});
+      }
+      break;
+    case 'subtraktion-blandat':
+      for (let i = 0; i < 6; i++) {
+        const small = Math.random() < 0.5;
+        const a = small ? rand(40, 99) : rand(200, 799);
+        const b = small ? rand(15, a - 5) : rand(50, a - 50);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} − ${b}</span>`, answer: a - b,
+          needsPaper: !small,
+          steps: [ `Svar: ${a - b}.` ]});
+      }
+      break;
+    case 'veckoprov-1':
+      for (let i = 0; i < 8; i++) {
+        const op = pick(['+', '−']);
+        const a = rand(50, 599);
+        const b = op === '+' ? rand(50, 399) : rand(30, a - 20);
+        const ans = op === '+' ? a + b : a - b;
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} ${op} ${b}</span>`, answer: ans,
+          needsPaper: a > 99 || b > 99,
+          steps: [ `Svar: ${ans}.` ]});
+      }
+      break;
+    case 'multiplikation-tabell':
+      for (let i = 0; i < 8; i++) {
+        const a = rand(2, 9);
+        const b = rand(2, 9);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} · ${b}</span>`, answer: a * b,
+          steps: [ `${a} · ${b} = ${a*b}.`, `Sitter tabellen? Annars: träna modulen "Multiplikationstabellen".` ]});
+      }
+      break;
+    case 'multiplikation-uppstallning':
+      for (let i = 0; i < 5; i++) {
+        const a = rand(13, 89);
+        const b = rand(3, 9);
+        qs.push({ type: 'input', prompt: `Ställ upp och räkna: <span class="math">${a} · ${b}</span>`, answer: a * b,
+          needsPaper: true,
+          steps: [
+            `Ställ upp: ${a} med ${b} under entalet.`,
+            `Multiplicera entalet först: ${b} · ${a%10} = ${b*(a%10)}.`,
+            `Sedan tiotalet: ${b} · ${Math.floor(a/10)} = ${b*Math.floor(a/10)}.`,
+            `Svar: ${a*b}.`
+          ]});
+      }
+      break;
+    case 'multiplikation-blandat':
+      for (let i = 0; i < 6; i++) {
+        const small = Math.random() < 0.5;
+        const a = small ? rand(2, 9) : rand(13, 79);
+        const b = small ? rand(2, 9) : rand(3, 9);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} · ${b}</span>`, answer: a * b,
+          needsPaper: !small,
+          steps: [ `Svar: ${a*b}.` ]});
+      }
+      break;
+    case 'division-kort':
+      for (let i = 0; i < 6; i++) {
+        const b = rand(2, 9);
+        const svar = rand(3, 9);
+        const a = b * svar;
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} ÷ ${b}</span>`, answer: svar,
+          steps: [
+            `Fråga dig: "${b} · vad = ${a}?"`,
+            `Från tabellen: ${b} · ${svar} = ${a}.`,
+            `Svar: ${svar}.`
+          ]});
+      }
+      break;
+    case 'division-rest':
+      for (let i = 0; i < 6; i++) {
+        const b = rand(3, 8);
+        const hela = rand(3, 9);
+        const rest = rand(1, b - 1);
+        const a = b * hela + rest;
+        qs.push({ type: 'input', prompt: `<span class="math">${a} ÷ ${b}</span>. Hur många hela? (Ignorera resten, skriv bara heltalssvaret)`, answer: hela,
+          needsPaper: true,
+          steps: [
+            `Hitta största tal i ${b}-ans tabell som inte är större än ${a}.`,
+            `${b} · ${hela} = ${b*hela}.`,
+            `Rest: ${a} − ${b*hela} = ${rest}.`,
+            `Hela svaret: ${hela} rest ${rest}.`
+          ]});
+      }
+      break;
+    case 'rakneordning':
+      for (let i = 0; i < 6; i++) {
+        const variant = i % 3;
+        if (variant === 0) {
+          const a = rand(2, 6), b = rand(2, 9), c = rand(2, 8);
+          qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} + ${b} · ${c}</span>`, answer: a + b * c,
+            steps: [ `Multiplikation före addition.`, `${b} · ${c} = ${b*c}.`, `${a} + ${b*c} = ${a + b*c}.` ]});
+        } else if (variant === 1) {
+          const a = rand(2, 6), b = rand(2, 8), c = rand(2, 6);
+          qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">(${a} + ${b}) · ${c}</span>`, answer: (a + b) * c,
+            steps: [ `Parenteser först.`, `${a} + ${b} = ${a+b}.`, `${a+b} · ${c} = ${(a+b)*c}.` ]});
+        } else {
+          const b = rand(2, 5), svar = rand(3, 8), a = b * svar, c = rand(1, svar - 1);
+          qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} ÷ ${b} − ${c}</span>`, answer: svar - c,
+            steps: [ `Division före subtraktion.`, `${a} ÷ ${b} = ${svar}.`, `${svar} − ${c} = ${svar - c}.` ]});
+        }
+      }
+      break;
+    case 'slutprov-14':
+      for (let i = 0; i < 10; i++) {
+        const op = pick(['+', '−', '·', '÷']);
+        let a, b, ans;
+        if (op === '+') { a = rand(50, 599); b = rand(50, 399); ans = a + b; }
+        else if (op === '−') { a = rand(100, 899); b = rand(50, a - 50); ans = a - b; }
+        else if (op === '·') { a = rand(12, 79); b = rand(3, 9); ans = a * b; }
+        else { b = rand(2, 9); const s = rand(3, 9); a = b * s; ans = s; }
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} ${op} ${b}</span>`, answer: ans,
+          needsPaper: true, steps: [ `Svar: ${ans}.` ]});
+      }
+      break;
+    default:
+      // Fallback
+      for (let i = 0; i < 5; i++) {
+        const a = rand(10, 50), b = rand(10, 50);
+        qs.push({ type: 'input', prompt: `Räkna ut: <span class="math">${a} + ${b}</span>`, answer: a+b, steps: [`Svar: ${a+b}.`]});
+      }
+  }
+  return qs;
+}
+
+function renderPlanDayPractice() {
+  const day = PLAN_14[state.plan14.currentDay - 1];
+  const pp = state.planPractice;
+  if (!pp || pp.index >= pp.questions.length) {
+    // Klart med dagens pass
+    finishPlanDay();
+    return;
+  }
+  const q = pp.questions[pp.index];
+  progLabel().textContent = `Dag ${day.day} — övning`;
+
+  app().innerHTML = `
+    <div class="card fade">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+        <div class="muted" style="font-size:13px;">Dag ${day.day}: ${day.title}</div>
+        <div class="muted" style="font-variant-numeric:tabular-nums; font-size:13px;">Uppgift ${pp.index + 1} / ${pp.questions.length}</div>
+      </div>
+      ${q.needsPaper ? `
+        <div class="paper-reminder" style="margin-top:10px; margin-bottom:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Ställ upp på papper först, skriv sedan in svaret.</span>
+        </div>
+      ` : ''}
+      <div class="q-prompt">${q.prompt}</div>
+      ${renderQuestionInput(q)}
+      <div id="fb"></div>
+      <div class="row" style="margin-top:18px;">
+        <button class="ghost small" id="hintBtn">Visa ledtråd</button>
+        <div class="spacer"></div>
+        <button id="submitBtn">Svara</button>
+      </div>
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backOverview">Avbryt dagens pass</button>
+    </div>
+  `;
+
+  document.getElementById('hintBtn').onclick = () => {
+    const hint = q.steps[0];
+    document.getElementById('hintBtn').outerHTML = `<div class="hint-box" style="margin:0;"><strong>Ledtråd:</strong> ${hint}</div>`;
+  };
+  document.getElementById('backOverview').onclick = () => {
+    state.screen = 'planOverview';
+    render();
+  };
+
+  wireQuestion(q, (correct) => {
+    pingStreak();
+    pp.total++;
+    if (correct) pp.correct++;
+    document.getElementById('submitBtn').textContent = pp.index + 1 >= pp.questions.length ? 'Avsluta passet' : 'Nästa';
+    document.getElementById('submitBtn').onclick = () => {
+      pp.index++;
+      if (pp.index >= pp.questions.length) {
+        finishPlanDay();
+      } else {
+        render();
+      }
+    };
+  });
+}
+
+function finishPlanDay() {
+  const day = PLAN_14[state.plan14.currentDay - 1];
+  const pp = state.planPractice || { correct: 0, total: 0 };
+  const dayNum = day.day;
+
+  // Markera dagen som klar
+  if (!state.plan14.completedDays.includes(dayNum)) {
+    state.plan14.completedDays.push(dayNum);
+  }
+  state.plan14.lastDayDate = todayStr();
+  state.plan14.dayStats[dayNum] = {
+    correct: pp.correct,
+    total: pp.total,
+    date: todayStr(),
+  };
+  saveState();
+  state.screen = 'planDayDone';
+  render();
+}
+
+function renderPlanDayDone() {
+  const day = PLAN_14[state.plan14.currentDay - 1];
+  const pp = state.planPractice || { correct: 0, total: 0 };
+  const pct = pp.total > 0 ? Math.round(pp.correct / pp.total * 100) : 0;
+  const nextDay = Math.min(day.day + 1, 14);
+  const isLast = day.day === 14;
+  const nextInfo = !isLast ? PLAN_14[nextDay - 1] : null;
+
+  progLabel().textContent = 'Dagens pass klart';
+  app().innerHTML = `
+    <div class="card fade" style="text-align:center;">
+      <h2>Bra jobbat!</h2>
+      <p class="lead">Dag ${day.day} är klar. Du klarade ${pp.correct} av ${pp.total} uppgifter (${pct}%).</p>
+
+      ${pct >= 80 ? `
+        <p>Det där satt bra. Du har fattat dagens metod.</p>
+      ` : pct >= 50 ? `
+        <p>Du är på god väg. Kom gärna tillbaka och gör om den här dagen om du vill träna mer.</p>
+      ` : `
+        <p>Det är ett svårt område. Gör om dagen när du är utvilad — det blir bättre för varje gång.</p>
+      `}
+
+      <div class="result-big" style="margin-top:20px;">${pct}%</div>
+      <div class="result-label">rätt idag</div>
+    </div>
+
+    ${!isLast ? `
+      <div class="card">
+        <h3 style="margin-top:0; font-size:16px;">Imorgon — dag ${nextDay}</h3>
+        <div style="font-weight:600; font-size:17px;">${nextInfo.title}</div>
+        <div class="muted" style="margin-top:2px;">${nextInfo.subtitle}</div>
+        <p style="margin-top:14px; font-size:15px;">Kom tillbaka imorgon för nästa pass. Det är bättre med ett kort pass varje dag än ett långt en gång i veckan.</p>
+      </div>
+    ` : `
+      <div class="card">
+        <h3 style="margin-top:0;">Du är färdig med hela planen!</h3>
+        <p>14 dagar. Addition, subtraktion, multiplikation, division — allt har du nu mött och tränat. Otroligt imponerande.</p>
+        <p>Nästa steg: använd kunskapen i andra områden i verktyget. Och fortsätt öva lite då och då så det sitter kvar.</p>
+      </div>
+    `}
+
+    <div class="linkrow">
+      <button id="backOverview">Tillbaka till översikten</button>
+      ${day.day > 1 ? `<button class="ghost" id="redoDay">Gör om dagen</button>` : ''}
+    </div>
+  `;
+  document.getElementById('backOverview').onclick = () => {
+    state.screen = 'planOverview';
+    render();
+  };
+  const redoBtn = document.getElementById('redoDay');
+  if (redoBtn) redoBtn.onclick = () => {
+    state.screen = 'planDayLesson';
+    state.planLessonStep = 0;
+    render();
+  };
+}
+
+/* ============================================================
+   VISA HUR DU RÄKNAR - RENDER-FUNKTIONER
+============================================================ */
+
+function renderUtrakningMenu() {
+  progLabel().textContent = 'Visa hur du räknar';
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Visa hur du räknar</h2>
+      <p class="lead">På nationella provet räcker det inte att skriva ett slutsvar. Du måste visa hur du tänkt. Det gäller på <strong>delprov B, C och D</strong>.</p>
+      <p>Här tränar du på att bygga upp en lösning steg för steg.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Varför är det viktigt att visa uträkning?</h3>
+      <p>Tänk dig att du svarar bara <strong>"150 kr"</strong> på en uppgift. Rättaren ser bara slutsvaret. Om det är fel — noll poäng.</p>
+      <p>Skriver du istället:</p>
+      <div class="step-block" style="font-size:15px;">
+        <em>"Rabatten är 25 % av 200 = 50 kr. Det nya priset blir 200 − 50 = 150 kr. Svar: 150 kr."</em>
+      </div>
+      <p>Nu ser rättaren att du förstår. Även om du gjort ett räknefel någonstans kan du få poäng för <strong>tankegången</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Två sätt att träna</h3>
+
+      <button class="topic-btn no-icon" id="goN1" style="width:100%; margin-bottom:10px;">
+        <span class="name">Nivå 1: Komplettera lösningar</span>
+        <span class="meta">Fyll i tomma rutor i en halvgjord lösning. Lättare start.</span>
+      </button>
+
+      <button class="topic-btn no-icon" id="goN2" style="width:100%;">
+        <span class="name">Nivå 2: Bygg lösningen själv</span>
+        <span class="meta">Svara på frågorna som leder dig genom lösningen. Mer som riktiga NP.</span>
+      </button>
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka till huvudmeny</button>
+    </div>
+  `;
+  document.getElementById('goN1').onclick = () => {
+    state.utrakningIdx = 0;
+    state.screen = 'utrakningN1';
+    render();
+  };
+  document.getElementById('goN2').onclick = () => {
+    state.utrakningIdx = 0;
+    state.screen = 'utrakningN2';
+    render();
+  };
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+function renderUtrakningN1() {
+  const idx = state.utrakningIdx || 0;
+  const u = UTRAKNING_NIVA1[idx];
+  progLabel().textContent = `Nivå 1: ${idx + 1} / ${UTRAKNING_NIVA1.length}`;
+
+  // Initiera lokalt steg-state om det inte finns
+  if (!state.utrakningState || state.utrakningState.id !== u.id) {
+    state.utrakningState = {
+      id: u.id,
+      stepStatus: u.steg.map(() => 'pending'), // 'pending', 'done'
+      finalDone: false,
+    };
+  }
+  const us = state.utrakningState;
+
+  // Bygg HTML för stegen
+  let stegHtml = '';
+  u.steg.forEach((s, i) => {
+    const done = us.stepStatus[i] === 'done';
+    const prevDone = i === 0 || us.stepStatus[i - 1] === 'done';
+    const cls = done ? 'done' : (prevDone ? '' : 'locked');
+    let row = `<div class="step-block ${cls}" data-step="${i}">`;
+    row += `<div class="substep-label">Steg ${i + 1}</div>`;
+    row += `<div>${s.text}`;
+    row += `<input class="step-input" data-input="1" data-step="${i}" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="?" />`;
+    if (s.input2 != null) {
+      row += s.suffix || '';
+      row += `<input class="step-input" data-input="2" data-step="${i}" type="text" inputmode="text" autocomplete="off" placeholder="?" />`;
+    } else if (s.suffix) {
+      row += s.suffix;
+    }
+    if (s.result != null && s.input2 == null) {
+      row += ` <span class="step-result">${s.result}</span>`;
+      row += s.resultSuffix || '';
+    } else if (s.result != null && s.input2 != null) {
+      row += (s.resultPrefix || '') + ` <span class="step-result">${s.result}</span>`;
+      row += s.resultSuffix || '';
+    }
+    row += `</div></div>`;
+    stegHtml += row;
+  });
+
+  // Slutsvars-input
+  const allStepsDone = us.stepStatus.every(s => s === 'done');
+  const finalSvarText = u.svarText || `${u.svar}${u.enhet ? ' ' + u.enhet : ''}`;
+
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="font-size:13px;">${u.område}</div>
+      <h2 style="margin-top:2px;">Komplettera lösningen</h2>
+      <p class="q-prompt" style="font-size:18px; margin-bottom:0;">${u.uppgift}</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0; font-size:16px;">Fyll i de gula rutorna</h3>
+      <p class="muted" style="font-size:14px;">Skriv in det som saknas. Tryck Enter eller klicka utanför rutan så kollar vi.</p>
+      ${stegHtml}
+
+      ${allStepsDone ? `
+        <div class="step-block done" style="margin-top:18px;">
+          <strong>Svar: ${finalSvarText}</strong>
+        </div>
+      ` : ''}
+
+      ${u.tips ? `
+        <div class="hint-box" style="margin-top:14px;">
+          <strong>Tips:</strong> ${u.tips}
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka</button>
+      <div class="spacer"></div>
+      ${idx > 0 ? `<button class="ghost" id="prevU">Förra</button>` : ''}
+      ${idx < UTRAKNING_NIVA1.length - 1 ? `<button id="nextU">Nästa uppgift</button>` : `<button id="nextU">Tillbaka till menyn</button>`}
+    </div>
+  `;
+
+  // Koppla input-fält
+  document.querySelectorAll('.step-input').forEach(input => {
+    const stepIdx = parseInt(input.dataset.step);
+    const inputNum = parseInt(input.dataset.input);
+    const checkInput = () => {
+      const v = parseAnswer(input.value);
+      if (isNaN(v)) return;
+      const s = u.steg[stepIdx];
+      const expected = inputNum === 1 ? s.input : s.input2;
+      const correct = Math.abs(v - expected) < 0.001;
+      if (correct) {
+        input.classList.remove('wrong');
+        input.classList.add('correct');
+        input.disabled = true;
+        // Kolla om alla inputs på detta steg är klara
+        const stepInputs = document.querySelectorAll(`.step-input[data-step="${stepIdx}"]`);
+        const allOk = Array.from(stepInputs).every(el => el.classList.contains('correct'));
+        if (allOk) {
+          us.stepStatus[stepIdx] = 'done';
+          render();
+        }
+      } else {
+        input.classList.remove('correct');
+        input.classList.add('wrong');
+        // Återställ efter en stund så eleven kan försöka igen
+        setTimeout(() => {
+          input.classList.remove('wrong');
+        }, 1500);
+      }
+    };
+    input.addEventListener('blur', checkInput);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkInput();
+      }
+    });
+  });
+
+  document.getElementById('backMenu').onclick = () => {
+    state.utrakningState = null;
+    state.screen = 'utrakningMenu';
+    render();
+  };
+  const prevBtn = document.getElementById('prevU');
+  if (prevBtn) prevBtn.onclick = () => {
+    state.utrakningIdx = idx - 1;
+    state.utrakningState = null;
+    render();
+  };
+  const nextBtn = document.getElementById('nextU');
+  if (nextBtn) nextBtn.onclick = () => {
+    if (idx < UTRAKNING_NIVA1.length - 1) {
+      state.utrakningIdx = idx + 1;
+      state.utrakningState = null;
+      render();
+    } else {
+      state.utrakningState = null;
+      state.screen = 'utrakningMenu';
+      render();
+    }
+  };
+
+  // Fokusera första olåsta input
+  setTimeout(() => {
+    const firstOpen = document.querySelector('.step-input:not(.correct):not([disabled])');
+    if (firstOpen) firstOpen.focus();
+  }, 100);
+}
+
+function renderUtrakningN2() {
+  const idx = state.utrakningIdx || 0;
+  const u = UTRAKNING_NIVA2[idx];
+  progLabel().textContent = `Nivå 2: ${idx + 1} / ${UTRAKNING_NIVA2.length}`;
+
+  if (!state.utrakningState || state.utrakningState.id !== u.id) {
+    state.utrakningState = {
+      id: u.id,
+      questionStatus: u.frågor.map(() => 'pending'),
+      showSolution: false,
+      writingText: state.utrakningTexts && state.utrakningTexts[u.id] ? state.utrakningTexts[u.id] : '',
+    };
+  }
+  if (!state.utrakningTexts) state.utrakningTexts = {};
+  const us = state.utrakningState;
+  const allDone = us.questionStatus.every(s => s === 'done');
+
+  let qHtml = '';
+  u.frågor.forEach((q, i) => {
+    const done = us.questionStatus[i] === 'done';
+    const prevDone = i === 0 || us.questionStatus[i - 1] === 'done';
+    const cls = done ? 'done' : (prevDone ? '' : 'locked');
+    qHtml += `
+      <div class="question-row ${cls}" data-q="${i}">
+        <div class="q-text">${i + 1}. ${q.fråga}</div>
+        <div class="q-input-row">
+          <input type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ditt svar" data-q="${i}" ${done ? `value="${q.svar}" disabled` : ''} />
+          <button class="ghost small" data-hint="${i}">Tips</button>
+        </div>
+        <div class="q-tip" id="qtip-${i}" style="display:none;">${q.tips}</div>
+      </div>
+    `;
+  });
+
+  app().innerHTML = `
+    <div class="card fade">
+      <div class="muted" style="font-size:13px;">${u.område}</div>
+      <h2 style="margin-top:2px;">Bygg lösningen själv</h2>
+      <p class="q-prompt" style="font-size:18px; margin-bottom:0;">${u.uppgift}</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0; font-size:16px;">Svara på delfrågorna i ordning</h3>
+      <p class="muted" style="font-size:14px;">Varje delfråga leder dig genom lösningen. Du måste svara rätt för att komma till nästa.</p>
+      <div class="question-stack">${qHtml}</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0; font-size:16px;">${u.skrivFält}</h3>
+      <p class="muted" style="font-size:14px;">På NP måste du skriva en sammanhängande lösning. Träna på det här.</p>
+      <textarea class="solution" id="writingArea" placeholder="Skriv din lösning här — använd dina svar från delfrågorna ovan...">${escapeHtml(us.writingText)}</textarea>
+      <p class="muted" style="font-size:13px; margin-top:6px;">Texten sparas automatiskt.</p>
+    </div>
+
+    ${allDone ? `
+      <div class="card">
+        <h3 style="margin-top:0;">Hur en bra lösning kan se ut</h3>
+        ${us.showSolution ? `
+          <div class="solution-box">
+            ${u.exempelLösning}
+          </div>
+          <div class="checklist">
+            <h4>Hade du med detta?</h4>
+            ${u.bedömning.map((b, i) => `
+              <label>
+                <input type="checkbox" />
+                <span>${b}</span>
+              </label>
+            `).join('')}
+          </div>
+          <p class="muted" style="font-size:14px; margin-top:14px;">Det är okej att missa något. Försök igen vid nästa uppgift.</p>
+        ` : `
+          <p>Du har svarat på alla delfrågor. Innan du tittar på exempellösningen — har du själv skrivit en sammanhängande lösning i rutan ovan?</p>
+          <button id="showSol" style="margin-top:10px;">Visa exempellösning</button>
+        `}
+      </div>
+    ` : ''}
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka</button>
+      <div class="spacer"></div>
+      ${idx > 0 ? `<button class="ghost" id="prevU">Förra</button>` : ''}
+      ${idx < UTRAKNING_NIVA2.length - 1 ? `<button id="nextU">Nästa uppgift</button>` : `<button id="nextU">Tillbaka till menyn</button>`}
+    </div>
+  `;
+
+  // Koppla input-fält
+  document.querySelectorAll('.question-row input[type="text"]').forEach(input => {
+    if (input.disabled) return;
+    const qIdx = parseInt(input.dataset.q);
+    const checkInput = () => {
+      const v = parseAnswer(input.value);
+      if (isNaN(v)) return;
+      const expected = u.frågor[qIdx].svar;
+      const correct = Math.abs(v - expected) < 0.01;
+      if (correct) {
+        us.questionStatus[qIdx] = 'done';
+        render();
+      } else {
+        input.style.borderColor = 'var(--bad)';
+        input.style.background = 'var(--bad-soft)';
+        input.style.color = 'var(--bad)';
+        setTimeout(() => {
+          input.style.borderColor = '';
+          input.style.background = '';
+          input.style.color = '';
+        }, 1500);
+      }
+    };
+    input.addEventListener('blur', checkInput);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkInput();
+      }
+    });
+  });
+
+  // Tips-knappar
+  document.querySelectorAll('button[data-hint]').forEach(btn => {
+    const i = btn.dataset.hint;
+    btn.onclick = () => {
+      const tip = document.getElementById('qtip-' + i);
+      if (tip) tip.style.display = tip.style.display === 'none' ? 'block' : 'none';
+    };
+  });
+
+  // Skrivruta — autosave
+  const writing = document.getElementById('writingArea');
+  if (writing) {
+    let timer;
+    writing.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        us.writingText = writing.value;
+        state.utrakningTexts[u.id] = writing.value;
+        saveState();
+      }, 400);
+    });
+  }
+
+  const showBtn = document.getElementById('showSol');
+  if (showBtn) showBtn.onclick = () => {
+    us.showSolution = true;
+    render();
+  };
+
+  document.getElementById('backMenu').onclick = () => {
+    state.utrakningState = null;
+    state.screen = 'utrakningMenu';
+    render();
+  };
+  const prevBtn = document.getElementById('prevU');
+  if (prevBtn) prevBtn.onclick = () => {
+    state.utrakningIdx = idx - 1;
+    state.utrakningState = null;
+    render();
+  };
+  const nextBtn = document.getElementById('nextU');
+  if (nextBtn) nextBtn.onclick = () => {
+    if (idx < UTRAKNING_NIVA2.length - 1) {
+      state.utrakningIdx = idx + 1;
+      state.utrakningState = null;
+      render();
+    } else {
+      state.utrakningState = null;
+      state.screen = 'utrakningMenu';
+      render();
+    }
+  };
+
+  // Fokusera första olåsta
+  setTimeout(() => {
+    const firstOpen = document.querySelector('.question-row:not(.locked):not(.done) input[type="text"]:not([disabled])');
+    if (firstOpen) firstOpen.focus();
+  }, 100);
+}
+
+/* ============================================================
+   VERIFIERINGSVERKTYG - dolt lärarverktyg
+   Nås via lärarläge -> "Kontrollera uppgifter"-knapp
+============================================================ */
+
+function renderVerify() {
+  progLabel().textContent = 'Verifieringsverktyg';
+  const count = state.verifyCount || 20;
+
+  // Generera uppgifter
+  const samples = [];
+  for (const [topic, gens] of Object.entries(GENS)) {
+    for (let g = 0; g < gens.length; g++) {
+      for (let i = 0; i < count; i++) {
+        try {
+          const q = gens[g]();
+          // Flagga misstänkta saker
+          const flags = analyzeQuestion(q, topic, g);
+          samples.push({
+            topic,
+            generator: g,
+            iteration: i,
+            prompt: q.prompt,
+            type: q.type,
+            answer: q.type === 'input' ? q.answer : q.choices[q.correctIndex],
+            steps: q.steps || [],
+            choices: q.choices || null,
+            flags,
+          });
+        } catch (e) {
+          samples.push({
+            topic, generator: g, iteration: i,
+            prompt: '(KRASCH)',
+            error: e.message,
+            flags: ['KRASCH: ' + e.message],
+          });
+        }
+      }
+    }
+  }
+
+  // Räkna varningar
+  const flagged = samples.filter(s => s.flags.length > 0);
+
+  app().innerHTML = `
+    <div class="card fade">
+      <h2>Verifieringsverktyg</h2>
+      <p class="lead">Detta är ett dolt lärarverktyg. Här genereras ${count} variationer av varje uppgift så du kan ögna igenom och hitta fel.</p>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="num">${samples.length}</div>
+          <div class="lbl">Genererade</div>
+        </div>
+        <div class="stat-box">
+          <div class="num" style="color:${flagged.length > 0 ? 'var(--bad)' : 'var(--good)'}">${flagged.length}</div>
+          <div class="lbl">Flaggade</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${Object.keys(GENS).length}</div>
+          <div class="lbl">Områden</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <button class="ghost small" id="verify10">Visa 10 / typ</button>
+        <button class="ghost small" id="verify20">Visa 20 / typ</button>
+        <button class="ghost small" id="verify50">Visa 50 / typ</button>
+        <div class="spacer"></div>
+        <button class="ghost small" id="exportAll">Exportera till txt</button>
+        <button class="ghost small" id="toggleFlaggedOnly">${state.verifyFlaggedOnly ? 'Visa alla' : 'Visa endast flaggade'}</button>
+      </div>
+    </div>
+
+    ${flagged.length > 0 ? `
+      <div class="card" style="border-left:3px solid var(--bad);">
+        <h3 style="margin-top:0; color:var(--bad);">Flaggade uppgifter (${flagged.length})</h3>
+        <p class="muted" style="font-size:14px;">Dessa har potentiella problem och bör granskas.</p>
+      </div>
+    ` : `
+      <div class="card" style="border-left:3px solid var(--good);">
+        <h3 style="margin-top:0; color:var(--good);">Inga automatiskt flaggade fel</h3>
+        <p class="muted" style="font-size:14px;">Men ögat ser saker som algoritmen missar — bläddra igenom uppgifterna nedan.</p>
+      </div>
+    `}
+
+    <div class="card">
+      ${(() => {
+        const groupedByTopic = {};
+        const toShow = state.verifyFlaggedOnly ? flagged : samples;
+        toShow.forEach(s => {
+          const key = `${s.topic}[${s.generator}]`;
+          if (!groupedByTopic[key]) groupedByTopic[key] = [];
+          groupedByTopic[key].push(s);
+        });
+        return Object.entries(groupedByTopic).map(([key, items]) => `
+          <details style="margin-bottom:12px;">
+            <summary style="cursor:pointer; padding:8px 0; font-weight:600; border-bottom:1px solid var(--line);">
+              ${key} <span class="muted" style="font-weight:400; font-size:14px;">(${items.length} st${items.some(i => i.flags.length > 0) ? ', ' + items.filter(i => i.flags.length > 0).length + ' flaggade' : ''})</span>
+            </summary>
+            <div style="padding:10px 0;">
+              ${items.map((s, i) => `
+                <div style="padding:10px 12px; margin:6px 0; background:${s.flags.length > 0 ? 'var(--bad-soft)' : 'var(--paper)'}; border:1px solid ${s.flags.length > 0 ? 'var(--bad)' : 'var(--line)'}; border-radius:4px; font-size:14px;">
+                  <div>${s.prompt}</div>
+                  <div style="margin-top:6px; font-family:var(--font-math); font-weight:600;">Svar: ${s.answer}${s.choices ? ' &nbsp;<span class="muted">(av: ' + s.choices.join(', ') + ')</span>' : ''}</div>
+                  ${s.flags.length > 0 ? `
+                    <div style="margin-top:6px; color:var(--bad); font-size:13px;">
+                      <strong>⚠ Flaggat:</strong> ${s.flags.join('; ')}
+                    </div>
+                  ` : ''}
+                  ${s.steps.length > 0 ? `
+                    <details style="margin-top:6px;">
+                      <summary class="muted" style="cursor:pointer; font-size:13px;">Lösningsgång</summary>
+                      <div style="font-size:13px; padding:6px 0 0 12px; color:var(--muted);">
+                        ${s.steps.map(step => `<div style="margin:2px 0;">${step}</div>`).join('')}
+                      </div>
+                    </details>
+                  ` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </details>
+        `).join('');
+      })()}
+    </div>
+
+    <div class="linkrow">
+      <button class="ghost" id="backMenu">Tillbaka till huvudmeny</button>
+    </div>
+  `;
+
+  document.getElementById('verify10').onclick = () => { state.verifyCount = 10; render(); };
+  document.getElementById('verify20').onclick = () => { state.verifyCount = 20; render(); };
+  document.getElementById('verify50').onclick = () => { state.verifyCount = 50; render(); };
+  document.getElementById('toggleFlaggedOnly').onclick = () => {
+    state.verifyFlaggedOnly = !state.verifyFlaggedOnly;
+    render();
+  };
+  document.getElementById('exportAll').onclick = () => exportVerification(samples);
+  document.getElementById('backMenu').onclick = () => { state.screen = 'topicMenu'; render(); };
+}
+
+// Analysera en uppgift för misstänkta saker
+function analyzeQuestion(q, topic, gIdx) {
+  const flags = [];
+  const promptText = q.prompt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+  if (q.type === 'input') {
+    if (q.answer == null || isNaN(q.answer)) flags.push('Svar är NaN/null');
+    if (typeof q.answer === 'number' && Math.abs(q.answer) > 100000) flags.push('Svar mycket stort: ' + q.answer);
+    if (q.answer === 0 && !promptText.match(/0\s*(kr|m|cm|°)/)) flags.push('Svar är 0');
+
+    // Kolla enhetskonsistens i lösningssteg
+    if (q.steps) {
+      const stepsText = q.steps.join(' ');
+      // Om uppgiften har "cm" men svaret antyder "m"
+      const promptHasCm = /\bcm\b/.test(promptText);
+      const promptHasM = /\bm\b/.test(promptText) && !/cm\b/.test(promptText);
+      const promptHasKr = /\bkr\b/.test(promptText);
+
+      // Kolla att stegen matchar svaret
+      const lastStep = q.steps[q.steps.length - 1] || '';
+      const lastStepNumMatch = lastStep.match(/-?\d+(?:[,.]\d+)?/g);
+      if (lastStepNumMatch && lastStepNumMatch.length > 0) {
+        const lastNumInStep = parseFloat(lastStepNumMatch[lastStepNumMatch.length - 1].replace(',', '.'));
+        if (!isNaN(lastNumInStep) && Math.abs(lastNumInStep - q.answer) > Math.max(0.01, Math.abs(q.answer) * 0.01)) {
+          // Sista talet i sista steget matchar inte svaret — kan vara ok om svaret står tidigare
+          const allNumsInLast = lastStepNumMatch.map(s => parseFloat(s.replace(',', '.')));
+          if (!allNumsInLast.some(n => Math.abs(n - q.answer) < Math.max(0.01, Math.abs(q.answer) * 0.01))) {
+            flags.push('Sista steg matchar inte svar (' + q.answer + ' vs ' + lastNumInStep + ')');
+          }
+        }
+      }
+    }
+  } else if (q.type === 'mc') {
+    if (q.correctIndex < 0 || q.correctIndex >= q.choices.length) flags.push('correctIndex utanför choices');
+    if (q.choices.length < 2) flags.push('För få alternativ');
+    // Dubletter
+    if (new Set(q.choices).size !== q.choices.length) flags.push('Dubletter i alternativ');
+  }
+
+  // Mycket långa prompter
+  if (promptText.length > 300) flags.push('Mycket lång prompt');
+
+  return flags;
+}
+
+function exportVerification(samples) {
+  const lines = [
+    'VERIFIERINGSEXPORT – ' + new Date().toLocaleString('sv-SE'),
+    `Version: ${VERSION}`,
+    `Totalt: ${samples.length} uppgifter`,
+    `Flaggade: ${samples.filter(s => s.flags.length > 0).length}`,
+    '',
+    '=== FLAGGADE ===',
+    ''
+  ];
+  samples.filter(s => s.flags.length > 0).forEach(s => {
+    lines.push(`[${s.topic}/${s.generator}] ${s.prompt.replace(/<[^>]+>/g, '')}`);
+    lines.push(`  Svar: ${s.answer}`);
+    lines.push(`  Flaggor: ${s.flags.join('; ')}`);
+    lines.push('');
+  });
+  lines.push('');
+  lines.push('=== ALLA ===');
+  lines.push('');
+  samples.forEach(s => {
+    lines.push(`[${s.topic}/${s.generator}] ${s.prompt.replace(/<[^>]+>/g, '')}`);
+    lines.push(`  Svar: ${s.answer}`);
+    if (s.flags.length > 0) lines.push(`  ⚠ ${s.flags.join('; ')}`);
+    lines.push('');
+  });
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `verifiering-${new Date().toISOString().slice(0,10)}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 function renderQuestionInput(q) {
   if (q.type === 'mc') {
     return `
@@ -3665,9 +5426,9 @@ function renderQuestionInput(q) {
   } else {
     return `
       <div class="row">
-        <input class="answer" id="ansInput" type="text" inputmode="decimal" placeholder="Ditt svar" autocomplete="off" />
+        <input class="answer" id="ansInput" type="text" inputmode="text" placeholder="Ditt svar" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
       </div>
-      <div class="muted" style="margin-top:8px; font-size:13px;">Tips: skriv decimaltal med komma, t.ex. 3,5.</div>
+      <div class="muted" style="margin-top:8px; font-size:13px;">Tips: skriv decimaltal med komma (3,5) eller punkt (3.5). Båda funkar.</div>
     `;
   }
 }
@@ -3871,6 +5632,13 @@ function initTeacherMode() {
   };
   document.getElementById('logSave').onclick = saveLogEntry;
   document.getElementById('logExport').onclick = exportLog;
+  document.getElementById('logVerify').onclick = () => {
+    log.style.display = 'none';
+    state.screen = 'verify';
+    state.verifyCount = 20;
+    state.verifyFlaggedOnly = false;
+    render();
+  };
   document.getElementById('logClose').onclick = () => { log.style.display = 'none'; };
   // Ctrl+Enter i textarean sparar direkt
   document.getElementById('logInput').addEventListener('keydown', (e) => {
